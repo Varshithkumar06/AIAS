@@ -66,11 +66,20 @@ class Config:
     SESSION_LIFETIME_HOURS = 24
     PERMANENT_SESSION_LIFETIME = 86400  # 24 hours in seconds
 
+    # Application Base URL (Azure Container Apps Live URL)
+    BASE_URL = os.getenv(
+        "BASE_URL",
+        "https://aias-web-standard.bluedune-52554353.southeastasia.azurecontainerapps.io"
+    ).rstrip("/")
+
     # Google OAuth
     GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "")
     GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "")
     GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
-    GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI", "http://localhost:5000/auth/google/callback")
+    GOOGLE_REDIRECT_URI = os.getenv(
+        "GOOGLE_REDIRECT_URI",
+        f"{BASE_URL}/auth/google/callback" if flask_env == "production" else "http://localhost:5000/auth/google/callback"
+    )
 
     # Zoom API Settings
     ZOOM_ACCOUNT_ID = os.getenv("ZOOM_ACCOUNT_ID", "")

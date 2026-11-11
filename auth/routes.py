@@ -440,6 +440,25 @@ def register():
     return render_template("register.html")
 
 
+def _get_google_redirect_uri():
+    """Determine the Google OAuth redirect URI with proper HTTPS scheme and Azure support."""
+    host = request.host or ""
+    is_azure = "azurecontainerapps.io" in host
+    is_https = request.is_secure or request.headers.get("X-Forwarded-Proto") == "https"
+
+    if is_azure:
+        return f"https://{host}/auth/google/callback"
+
+    redirect_uri = Config.GOOGLE_REDIRECT_URI
+    if not redirect_uri:
+        redirect_uri = url_for("auth.google_callback", _external=True)
+
+    if (Config.FLASK_ENV == "production" or is_https) and redirect_uri.startswith("http://"):
+        redirect_uri = redirect_uri.replace("http://", "https://", 1)
+
+    return redirect_uri
+
+
 # ──────────────────────────────────────
 # GOOGLE OAUTH
 # ──────────────────────────────────────
@@ -456,9 +475,7 @@ def google_login():
         return redirect(target_url)
 
     google = get_google_client()
-    redirect_uri = Config.GOOGLE_REDIRECT_URI or url_for("auth.google_callback", _external=True)
-    if Config.FLASK_ENV == "production" and redirect_uri.startswith("http://"):
-        redirect_uri = redirect_uri.replace("http://", "https://", 1)
+    redirect_uri = _get_google_redirect_uri()
     return google.authorize_redirect(redirect_uri)
 
 
@@ -467,9 +484,7 @@ def google_callback():
     """Handle Google OAuth callback."""
     try:
         google = get_google_client()
-        redirect_uri = Config.GOOGLE_REDIRECT_URI or url_for("auth.google_callback", _external=True)
-        if Config.FLASK_ENV == "production" and redirect_uri.startswith("http://"):
-            redirect_uri = redirect_uri.replace("http://", "https://", 1)
+        redirect_uri = _get_google_redirect_uri()
             
         try:
             token = google.authorize_access_token()

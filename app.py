@@ -11,6 +11,7 @@ from datetime import datetime, timedelta, timezone
 
 from flask import Flask, redirect, render_template, request, jsonify, session as flask_session, url_for, send_from_directory
 from flask_wtf.csrf import CSRFProtect
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 # Ensure project root is in path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -26,8 +27,13 @@ def create_app():
     """Application factory."""
     app = Flask(__name__)
 
+    # Support reverse proxies (Azure Container Apps, Nginx, etc.)
+    # Reads X-Forwarded-For, X-Forwarded-Proto, X-Forwarded-Host, X-Forwarded-Prefix
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+
     # ── Configuration ──
     app.config["SECRET_KEY"] = Config.SECRET_KEY
+    app.config["BASE_URL"] = Config.BASE_URL
     app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=Config.SESSION_LIFETIME_HOURS)
     app.config["SESSION_COOKIE_HTTPONLY"] = Config.SESSION_COOKIE_HTTPONLY
     app.config["SESSION_COOKIE_SAMESITE"] = Config.SESSION_COOKIE_SAMESITE
@@ -36,6 +42,14 @@ def create_app():
 
     # ── Security: CSRF Protection ──
     csrf = CSRFProtect(app)
+
+    # ── Global Context Processor ──
+    @app.context_processor
+    def inject_global_urls():
+        return {
+            "BASE_URL": Config.BASE_URL,
+            "APP_URL": Config.BASE_URL,
+        }
 
     # ── Initialize Extensions ──
     init_bcrypt(app)
@@ -680,9 +694,10 @@ if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
     print("\n" + "=" * 56)
     print("  [AIAS] Platform")
-    print(f"  -> http://localhost:{port}/")
-    print(f"  -> http://localhost:{port}/signin")
-    print(f"  -> http://localhost:{port}/register")
+    print(f"  -> Local:      http://localhost:{port}/")
+    print(f"  -> Sign In:    http://localhost:{port}/signin")
+    print(f"  -> Register:   http://localhost:{port}/register")
+    print(f"  -> Azure Live: {Config.BASE_URL}/")
     print("=" * 56 + "\n")
     app.run(
         host="0.0.0.0",

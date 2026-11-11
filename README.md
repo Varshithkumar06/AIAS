@@ -5,6 +5,9 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-5.0-DC382D?style=flat-square&logo=redis&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=flat-square&logo=docker&logoColor=white)
+[![Azure Container Apps](https://img.shields.io/badge/Live_Deployment-Azure_Container_Apps-0078D4?style=flat-square&logo=microsoftazure&logoColor=white)](https://aias-web-standard.bluedune-52554353.southeastasia.azurecontainerapps.io/)
+
+> 🌐 **Live Production URL:** [https://aias-web-standard.bluedune-52554353.southeastasia.azurecontainerapps.io/](https://aias-web-standard.bluedune-52554353.southeastasia.azurecontainerapps.io/)
 
 AIAS is a Flask-based business website and lead management platform. It provides a public website, secure user authentication, an Aria chatbot for lead capture, booking workflows, admin operations, MongoDB Atlas database persistence, Redis caching, email notifications, Zoom meeting support, and Docker-based deployment.
 
@@ -435,6 +438,13 @@ docker compose exec -T aias-platform python -c "from app import create_app; app=
 
 ## Production Notes
 
+- **Live Azure Deployment:** `https://aias-web-standard.bluedune-52554353.southeastasia.azurecontainerapps.io/`
+- **Reverse Proxy Header Support:** The Flask app includes `werkzeug.middleware.proxy_fix.ProxyFix` to correctly handle `X-Forwarded-Proto`, `X-Forwarded-Host`, and `X-Forwarded-For` from Azure Container Apps ingress.
+- **Google OAuth Redirect URI in Production:**
+  Add the following URI to your Google Cloud Console's *Authorized Redirect URIs*:
+  ```text
+  https://aias-web-standard.bluedune-52554353.southeastasia.azurecontainerapps.io/auth/google/callback
+  ```
 - Use production-grade secret storage for deployed credentials.
 - Rotate credentials before first public deployment.
 - Keep `.env` local and out of version control.
