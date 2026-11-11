@@ -23,6 +23,44 @@ from database.db import db_manager, db, sanitize_doc
 from database.security import DatabaseSecurity
 
 
+def start_local_redis():
+    """Attempt to start the local Redis server if not already running (Windows or Linux/Docker)."""
+    import socket
+    import subprocess
+    import shutil
+    import time
+    
+    # Check if port 6379 is in use
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(0.4)
+            if s.connect_ex(('127.0.0.1', 6379)) == 0:
+                return  # Redis is already running
+    except Exception:
+        pass
+
+    # Windows bundled Redis
+    redis_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Redis", "redis-server.exe")
+    if os.path.exists(redis_path):
+        try:
+            creationflags = 0x08000000 if sys.platform == "win32" else 0
+            subprocess.Popen([redis_path], creationflags=creationflags, cwd=os.path.dirname(redis_path))
+            time.sleep(0.8)
+            return
+        except Exception as e:
+            print(f"[Startup] Failed to start bundled Redis: {e}")
+
+    # Linux / Container system redis-server
+    redis_bin = shutil.which("redis-server")
+    if redis_bin:
+        try:
+            subprocess.Popen([redis_bin, "--daemonize", "yes", "--dir", "/tmp", "--protected-mode", "no"])
+            time.sleep(0.5)
+            return
+        except Exception as e:
+            print(f"[Startup] Failed to auto-start system Redis: {e}")
+
+
 def create_app():
     """Application factory."""
     app = Flask(__name__)
@@ -79,6 +117,10 @@ def create_app():
             log.warning("[Startup] ✗ Database UNHEALTHY — %s", db_health.get("error", "unknown"))
     except Exception as exc:
         log.warning("[Startup] ✗ Database check failed: %s", str(exc)[:200])
+
+    # Auto-start Redis if configured for localhost and not running
+    if "localhost" in Config.REDIS_URL or "127.0.0.1" in Config.REDIS_URL:
+        start_local_redis()
 
     log.info("[Startup] Verifying Redis connectivity...")
     try:
@@ -660,31 +702,6 @@ def create_app():
 
     return app
 
-
-# ── Run ──
-def start_local_redis():
-    """Attempt to start the local Redis server if not already running."""
-    import socket
-    import subprocess
-    import time
-    
-    redis_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Redis", "redis-server.exe")
-    if not os.path.exists(redis_path):
-        return
-
-    # Check if port 6379 is in use
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.settimeout(0.5)
-        if s.connect_ex(('127.0.0.1', 6379)) == 0:
-            return  # Redis is already running
-
-    print("[Startup] Auto-starting local Redis server in background...")
-    try:
-        # CREATE_NO_WINDOW flag prevents a new command prompt from popping up
-        subprocess.Popen([redis_path], creationflags=0x08000000, cwd=os.path.dirname(redis_path))
-        time.sleep(1)  # Give it a moment to bind to the port
-    except Exception as e:
-        print(f"[Startup] Failed to auto-start Redis: {e}")
 
 if __name__ == "__main__":
     if Config.FLASK_ENV == "development":

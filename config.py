@@ -78,7 +78,7 @@ class Config:
     GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
     GOOGLE_REDIRECT_URI = os.getenv(
         "GOOGLE_REDIRECT_URI",
-        f"{BASE_URL}/auth/google/callback" if flask_env == "production" else "http://localhost:5000/auth/google/callback"
+        f"{BASE_URL}/auth/google/callback"
     )
 
     # Zoom API Settings
