@@ -4,12 +4,30 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AIAS | AI As A Solution - Platform for Business Automation</title>
-  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/logo.svg') }}"><link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
   <meta name="description" content="AIAS is a B2B AI SaaS platform that helps teams deploy AI agents, automate workflows, and scale enterprise AI operations with real-time analytics." />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=DM+Sans:wght@300;400;500;700&display=swap');
+  <meta name="theme-color" content="#0A0A0A" />
 
+  <!-- Favicon is inlined so it can never 404. To use your own files, replace this href with url_for('static', filename='images/logo.svg') -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,5 90,28 90,72 50,95 10,72 10,28' fill='%230C0C0C' stroke='%23D4AF37' stroke-width='7' stroke-linejoin='round'/%3E%3Cpath d='M50 24 L74 74 H62 L50 50 L38 74 H26 Z' fill='%23D4AF37'/%3E%3Crect x='42' y='61' width='16' height='4' fill='%23D4AF37'/%3E%3C/svg%3E" />
+
+  <!-- Apply saved theme BEFORE first paint (prevents the white/dark flash) -->
+  <script>
+    (function () {
+      var d = document.documentElement;
+      d.classList.add('js');
+      try {
+        var t = localStorage.getItem('theme');
+        var dark = t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        d.classList.add(dark ? 'dark-theme' : 'light-theme');
+      } catch (e) { d.classList.add('light-theme'); }
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=DM+Sans:wght@300;400;500;700&display=swap" />
+
+  <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
@@ -18,1933 +36,647 @@
       --ds-soft: #F9F7F2;
       --ds-gold: #D4AF37;
       --ds-gold-deep: #B88912;
+      --ds-gold-text: #9A6F0B;
+      --ds-on-gold: #0A0A0A;
       --ds-muted: #646464;
       --ds-line: rgba(0,0,0,0.08);
+      --ds-track: #EFECE4;
+      --ds-ok: #2f7a2f;
+      --ds-ok-bg: #eef7e8;
+      --ds-ok-line: #d5e8c8;
       --page-max: 1280px;
       --page-pad: clamp(1rem, 3vw, 2.75rem);
       --serif: 'Cormorant Garamond', Georgia, serif;
-      --sans: 'DM Sans', sans-serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color-scheme: light;
     }
-
-    html.dark-theme,
-    html:not(.light-theme) {
-      /* Dynamic behavior handled by JS and CSS combination */
+    html.dark-theme {
+      --ds-black: #FFFFFF;
+      --ds-white: #0A0A0A;
+      --ds-soft: #141414;
+      --ds-gold-text: #D4AF37;
+      --ds-muted: #A0A0A0;
+      --ds-line: rgba(255,255,255,0.12);
+      --ds-track: #242424;
+      --ds-ok: #8fd16a;
+      --ds-ok-bg: rgba(143,209,106,0.08);
+      --ds-ok-line: rgba(143,209,106,0.28);
+      color-scheme: dark;
     }
-    
-    @media (prefers-color-scheme: dark) {
-      :root:not(.light-theme) {
-        --ds-black: #FFFFFF;
-        --ds-white: #0A0A0A;
-        --ds-soft: #141414;
-        --ds-muted: #A0A0A0;
-        --ds-line: rgba(255,255,255,0.12);
-      }
-    }
-    :root.dark-theme {
-        --ds-black: #FFFFFF;
-        --ds-white: #0A0A0A;
-        --ds-soft: #141414;
-        --ds-muted: #A0A0A0;
-        --ds-line: rgba(255,255,255,0.12);
-      }
 
     html { scroll-behavior: smooth; }
-    html.intro-lock,
-    body.intro-lock {
-      overflow: hidden;
-      height: 100%;
-      overscroll-behavior: none;
-    }
-    body.intro-lock {
-      touch-action: none;
-    }
-    body { font-family: var(--sans); background: var(--ds-white); color: var(--ds-black); }
+    html.intro-lock, body.intro-lock { overflow: hidden; height: 100%; overscroll-behavior: none; }
+    body.intro-lock { touch-action: none; }
+    body { font-family: var(--sans); background: var(--ds-white); color: var(--ds-black); -webkit-font-smoothing: antialiased; }
+    section[id] { scroll-margin-top: 84px; }
+    a, button { font-family: inherit; }
+    :focus-visible { outline: 2px solid var(--ds-gold); outline-offset: 3px; }
 
-    .site {
-      width: 100%;
-      min-height: 100vh;
-      background: var(--ds-white);
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 600ms ease, transform 600ms ease;
-    }
-    .site.ready {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    /* ───────── Icons (SVG sprite) ───────── */
+    .ico { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
 
-    .cinematic-intro {
-      position: fixed;
-      inset: 0;
-      background: var(--ds-white);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      overflow: hidden;
-      transition: opacity 400ms ease, visibility 400ms ease;
-    }
-    .cinematic-intro::before {
-      content: "";
-      position: absolute;
-      width: 60vmax;
-      height: 60vmax;
-      background: radial-gradient(circle, rgba(212,175,55,0.22) 0%, rgba(212,175,55,0.08) 36%, rgba(212,175,55,0) 70%);
-      top: -32vmax;
-      right: -18vmax;
-      animation: haloDrift 7s ease-in-out infinite;
-    }
-    .cinematic-intro::after {
-      content: "";
-      position: absolute;
-      width: 52vmax;
-      height: 52vmax;
-      background: radial-gradient(circle, rgba(212,175,55,0.16) 0%, rgba(212,175,55,0) 68%);
-      bottom: -30vmax;
-      left: -18vmax;
-      animation: haloDrift 7s ease-in-out infinite 1.2s;
-    }
-    .intro-hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-    .aias-stage {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      padding: 1rem;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      animation: stageIn 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
-    }
-    @keyframes stageIn {
-      from { opacity: 0; transform: scale(0.88) translateY(24px); }
-      to   { opacity: 1; transform: scale(1)   translateY(0); }
-    }
-    .aias-text {
-      font-family: var(--serif);
-      font-size: clamp(62px, 9.6vw, 132px);
-      font-weight: 400;
-      letter-spacing: 0.08em;
-      color: var(--ds-black);
-      text-transform: uppercase;
-      display: inline-flex;
-      align-items: baseline;
-      justify-content: center;
-      gap: 0;
-      opacity: 0;
-      transform: translateY(10px) scale(0.98);
-      animation: introWordEase 560ms cubic-bezier(0.22, 1, 0.36, 1) forwards 300ms;
-    }
-    .aias-glow {
-      margin-top: 0.45rem;
-      font-family: var(--serif);
-      color: var(--ds-black);
-      font-size: clamp(15px, 2vw, 22px);
-      font-weight: 400;
-      line-height: 1.18;
-      letter-spacing: 0.04em;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.1rem;
-      width: max-content;
-      max-width: 90vw;
-      margin-left: auto;
-      margin-right: auto;
-      opacity: 0;
-      transform: translateY(8px);
-      animation: introSubEase 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards 800ms;
-    }
-    .aias-letter,
-    .aias-sub-word {
-      display: inline-block;
-      backface-visibility: hidden;
-    }
-    .aias-sub-line {
-      display: flex;
-      align-items: baseline;
-      justify-content: flex-start;
-      flex-wrap: wrap;
-      gap: 0.35em;
-      width: 100%;
-    }
-    .gold-text {
-      color: var(--ds-gold);
-    }
-    .black-text {
-      color: var(--ds-black);
-    }
-    .skip-intro {
-      position: absolute;
-      right: 2rem;
-      bottom: 2rem;
-      border: 0.5px solid rgba(212,175,55,0.8);
-      background: var(--ds-white);
-      color: #9f760c;
-      font-family: var(--sans);
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 8px 14px;
-      cursor: pointer;
-    }
+    /* ───────── Layout shell ───────── */
+    .site { width: 100%; min-height: 100vh; background: var(--ds-white); opacity: 0; transition: opacity 600ms ease; }
+    .site.ready { opacity: 1; }
+    .site.is-hidden { display: none; }
+    html:not(.js) .site { opacity: 1; }
+    html:not(.js) .cinematic-intro { display: none; }
 
-    .site > nav,
-    .site > .hero,
-    .site > .tagline-band,
-    .site > .problems,
-    .site > .solutions,
-    .site > .how-it-works,
-    .site > .use-cases,
-    .site > .live-demo,
-    .site > .keywords-section,
-    .site > .pricing,
-    .site > .results,
-    .site > .seo-block,
-    .site > .cta-final,
-    .site > footer {
+    .site > nav, .site > .hero, .site > .stack-band, .site > .tagline-band, .site > .problems, .site > .solutions,
+    .site > .how-it-works, .site > .use-cases, .site > .live-demo, .site > .keywords-section,
+    .site > .pricing, .site > .results, .site > .seo-block, .site > .cta-final, .site > footer {
       padding-left: max(var(--page-pad), calc((100vw - var(--page-max)) / 2));
       padding-right: max(var(--page-pad), calc((100vw - var(--page-max)) / 2));
     }
 
+    /* ───────── Cinematic intro ───────── */
+    .cinematic-intro {
+      position: fixed; inset: 0; background: var(--ds-white);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; overflow: hidden;
+      transition: opacity 450ms ease, visibility 450ms ease;
+    }
+    .cinematic-intro::before {
+      content: ""; position: absolute; width: 60vmax; height: 60vmax;
+      background: radial-gradient(circle, rgba(212,175,55,0.22) 0%, rgba(212,175,55,0.08) 36%, rgba(212,175,55,0) 70%);
+      top: -32vmax; right: -18vmax; animation: haloDrift 7s ease-in-out infinite;
+    }
+    .cinematic-intro::after {
+      content: ""; position: absolute; width: 52vmax; height: 52vmax;
+      background: radial-gradient(circle, rgba(212,175,55,0.16) 0%, rgba(212,175,55,0) 68%);
+      bottom: -30vmax; left: -18vmax; animation: haloDrift 7s ease-in-out infinite 1.2s;
+    }
+    .intro-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .aias-stage { position: relative; z-index: 2; text-align: center; padding: 1rem; width: 100%; display: flex; flex-direction: column; align-items: center; }
+    .intro-mark { width: clamp(64px, 9vw, 104px); height: clamp(64px, 9vw, 104px); margin-bottom: 1.1rem; filter: drop-shadow(0 6px 22px rgba(212,175,55,0.35)); opacity: 0; animation: markIn 700ms cubic-bezier(0.22,1,0.36,1) forwards 80ms; }
+    .aias-text {
+      font-family: var(--serif); font-size: clamp(62px, 9.6vw, 132px); font-weight: 400;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--ds-black);
+      display: inline-flex; align-items: baseline; justify-content: center; line-height: 1;
+    }
+    .aias-letter { display: inline-block; opacity: 0; animation: letterIn 650ms cubic-bezier(0.22,1,0.36,1) forwards; animation-delay: calc(320ms + var(--i) * 110ms); }
+    .aias-glow {
+      margin-top: 0.9rem; font-family: var(--serif); font-size: clamp(15px, 2vw, 22px); font-weight: 400;
+      line-height: 1.25; letter-spacing: 0.04em; display: flex; flex-direction: column; align-items: center; gap: 0.1rem;
+    }
+    .aias-sub-line { display: flex; align-items: baseline; justify-content: center; flex-wrap: wrap; gap: 0.35em; }
+    .aias-sub-word { display: inline-block; opacity: 0; animation: wordIn 520ms cubic-bezier(0.22,1,0.36,1) forwards; animation-delay: calc(950ms + var(--i) * 90ms); }
+    .gold-text { color: var(--ds-gold); }
+    .black-text { color: var(--ds-black); }
+    .skip-intro {
+      position: absolute; right: 2rem; bottom: 2rem; border: 0.5px solid rgba(212,175,55,0.8);
+      background: var(--ds-white); color: var(--ds-gold-text); font-size: 11px; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 8px 14px; cursor: pointer; z-index: 3;
+    }
+
+    /* ───────── Navigation ───────── */
     nav {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      padding-top: 1rem;
-      padding-bottom: 1rem;
-      background: var(--ds-white);
-      border-bottom: 0.5px solid var(--ds-line);
+      position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center;
+      gap: 1rem; padding-top: 1rem; padding-bottom: 1rem; background: var(--ds-white); border-bottom: 0.5px solid var(--ds-line);
     }
-    .logo {
-      font-family: var(--serif);
-      font-size: 22px;
-      letter-spacing: 0.04em;
-    }
-    .logo span { color: var(--ds-gold); }
-    nav ul {
-      list-style: none;
-      display: flex;
-      align-items: center;
-      gap: 1.35rem;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-    nav a {
-      text-decoration: none;
-      color: var(--ds-muted);
-      font-size: 13px;
-      letter-spacing: 0.03em;
-    }
-    nav a:hover { color: var(--ds-black); }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ds-black); font-family: var(--serif); font-size: 22px; letter-spacing: 0.04em; }
+    .logo-mark { width: 34px; height: 34px; filter: drop-shadow(0 2px 8px rgba(212,175,55,0.3)); flex-shrink: 0; }
+    .logo-word em { font-style: normal; color: var(--ds-gold); }
+    nav ul { list-style: none; display: flex; align-items: center; gap: 1.35rem; flex-wrap: wrap; justify-content: flex-end; }
+    nav a { text-decoration: none; color: var(--ds-muted); font-size: 13px; letter-spacing: 0.03em; transition: color 0.2s ease; }
+    nav a:hover { color: var(--ds-gold-text); }
     .nav-cta {
-      background: var(--ds-black);
-      color: var(--ds-white);
-      padding: 8px 16px;
-      border-radius: 2px;
-      border: 0.5px solid var(--ds-black);
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      padding: 12px 22px; border-radius: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      background: var(--ds-white); color: var(--ds-gold-text); border: 1px solid var(--ds-gold); transition: all 0.3s ease; display: inline-block;
     }
-    .nav-cta:hover {
-      color: var(--ds-white);
-      background: var(--ds-gold-deep);
-      border-color: var(--ds-gold-deep);
-    }
+    nav a.nav-cta:hover { background: linear-gradient(135deg, var(--ds-gold) 0%, var(--ds-gold-deep) 100%); color: var(--ds-on-gold); box-shadow: 0 6px 22px rgba(212,175,55,0.35); transform: translateY(-1px); }
     .nav-welcome {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      text-decoration: none;
-      color: var(--ds-black) !important;
-      font-family: var(--sans);
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      background: none !important;
-      border: none !important;
-      padding: 0 !important;
-      cursor: pointer;
-      transition: color 0.2s ease;
+      display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ds-black) !important;
+      font-family: var(--serif); font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; position: relative; padding-right: 14px;
     }
-    .nav-welcome:hover {
-      color: var(--ds-gold) !important;
-    }
+    .nav-welcome::after { content: ''; position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 6px; height: 6px; background: var(--ds-gold-deep); border-radius: 50%; }
+    .nav-welcome:hover { color: var(--ds-gold) !important; }
+    .nav-welcome .chev { width: 12px; height: 12px; transition: transform 0.2s ease; }
     .welcome-dropdown {
-      display: none;
-      position: absolute;
-      top: 100%;
-      right: 0;
-      margin-top: 0.75rem;
-      background: var(--ds-soft);
-      border: 0.5px solid var(--ds-line);
-      border-radius: 4px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-      padding: 1rem;
-      min-width: 220px;
-      z-index: 1000;
-      text-align: left;
+      display: none; position: absolute; top: 100%; right: 0; margin-top: 0.75rem; background: var(--ds-soft);
+      border: 0.5px solid var(--ds-line); border-radius: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      padding: 1rem; min-width: 220px; z-index: 1000; text-align: left;
     }
-    .dropdown-link {
-      display: block;
-      color: var(--ds-muted);
-      font-size: 12px;
-      font-weight: 500;
-      text-decoration: none;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      transition: color 0.2s ease;
-      margin-top: 0.25rem;
-    }
-    .dropdown-link:hover {
-      color: var(--ds-black) !important;
-    }
-    .hero {
-      padding-top: 4.2rem;
-      padding-bottom: 3.4rem;
-      border-bottom: 0.5px solid var(--ds-line);
-      background:
-        radial-gradient(circle at 88% 4%, rgba(212,175,55,0.12), rgba(212,175,55,0) 36%),
-        var(--ds-white);
-    }
-    .hero-eyebrow {
-      font-size: 11px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--ds-gold-deep);
-      margin-bottom: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .hero-eyebrow::before {
-      content: "";
-      width: 28px;
-      height: 0.5px;
-      background: var(--ds-gold-deep);
-      display: block;
-    }
-    h1 {
-      font-family: var(--serif);
-      font-size: clamp(42px, 6vw, 72px);
-      line-height: 1.04;
-      letter-spacing: -0.015em;
-      font-weight: 300;
-      max-width: 900px;
-      margin-bottom: 1.3rem;
-    }
-    .hero-sub {
-      max-width: 780px;
-      font-size: 17px;
-      color: var(--ds-muted);
-      line-height: 1.75;
-      margin-bottom: 1.3rem;
-    }
-    .hero-use-case {
-      font-size: 13px;
-      color: var(--ds-black);
-      margin-bottom: 2.2rem;
-      padding: 10px 12px;
-      border-left: 2px solid var(--ds-gold);
-      background: var(--ds-soft);
-      max-width: 780px;
-    }
-    .hero-actions {
-      display: flex;
-      gap: 0.9rem;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 2.8rem;
-    }
-    .btn-primary,
-    .btn-secondary {
-      padding: 12px 20px;
-      border-radius: 2px;
-      cursor: pointer;
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-    .btn-primary {
-      border: 0.5px solid var(--ds-black);
-      background: var(--ds-black);
-      color: var(--ds-white);
-    }
-    .btn-primary:hover {
-      background: var(--ds-gold-deep);
-      border-color: var(--ds-gold-deep);
-    }
-    .btn-secondary {
-      border: 0.5px solid var(--ds-gold-deep);
-      background: var(--ds-white);
-      color: var(--ds-gold-deep);
-    }
-    .btn-secondary:hover {
-      background: var(--ds-soft);
-    }
-    .hero-metric-row {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 1rem;
-      padding-top: 1.5rem;
-      border-top: 0.5px solid var(--ds-line);
-    }
-    .metric {
-      border: 0.5px solid var(--ds-line);
-      background: var(--ds-white);
-      padding: 1rem;
-    }
-    .metric-val {
-      font-family: var(--serif);
-      font-size: 32px;
-      line-height: 1;
-      color: var(--ds-black);
-    }
-    .metric-label {
-      margin-top: 6px;
-      font-size: 12px;
-      color: var(--ds-muted);
-      letter-spacing: 0.04em;
-    }
+    .dropdown-link { display: block; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
+    .dd-label { font-size: 11px; color: var(--ds-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+    .dd-email { font-size: 13px; color: var(--ds-black); word-break: break-all; }
+    .dd-sep { border-top: 0.5px solid var(--ds-line); margin: 0.75rem 0; }
 
-    .tagline-band {
-      padding-top: 1.6rem;
-      padding-bottom: 1.6rem;
-      border-bottom: 0.5px solid var(--ds-line);
-      background: var(--ds-soft);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-    }
-    .tagline-band p {
-      font-family: var(--serif);
-      font-size: 24px;
-      font-weight: 300;
-      color: var(--ds-black);
-      max-width: 700px;
-      line-height: 1.3;
-    }
-    .band-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--ds-gold-deep);
-      text-align: right;
-      line-height: 1.6;
-    }
-
-    .problems,
-    .solutions,
-    .how-it-works,
-    .use-cases,
-    .live-demo,
-    .keywords-section,
-    .pricing,
-    .results,
-    .seo-block,
-    .cta-final,
-    footer,
-    .hero,
-    .tagline-band {
-      opacity: 0;
-      transform: translateY(16px);
-      transition: opacity 560ms ease, transform 560ms ease;
-    }
-    .in-view {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .reveal .problem-item,
-    .reveal .feature-card,
-    .reveal .how-card,
-    .reveal .use-card,
-    .reveal .demo-panel,
-    .reveal .price-card,
-    .reveal .result-metric,
-    .reveal .sales-card,
-    .reveal .testimonial,
-    .reveal .logo-pill {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 560ms ease, transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .reveal.in-view .problem-item,
-    .reveal.in-view .feature-card,
-    .reveal.in-view .how-card,
-    .reveal.in-view .use-card,
-    .reveal.in-view .demo-panel,
-    .reveal.in-view .price-card,
-    .reveal.in-view .prediction-card,
-    .reveal.in-view .build-tag {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .reveal.in-view .problem-item:nth-child(1),
-    .reveal.in-view .feature-card:nth-child(1),
-    .reveal.in-view .how-card:nth-child(1),
-    .reveal.in-view .use-card:nth-child(1),
-    .reveal.in-view .price-card:nth-child(1),
-    .reveal.in-view .prediction-card:nth-child(1),
-    .reveal.in-view .build-tag:nth-child(1) { transition-delay: 80ms; }
-    .reveal.in-view .problem-item:nth-child(2),
-    .reveal.in-view .feature-card:nth-child(2),
-    .reveal.in-view .how-card:nth-child(2),
-    .reveal.in-view .use-card:nth-child(2),
-    .reveal.in-view .price-card:nth-child(2),
-    .reveal.in-view .prediction-card:nth-child(2),
-    .reveal.in-view .build-tag:nth-child(2) { transition-delay: 150ms; }
-    .reveal.in-view .problem-item:nth-child(3),
-    .reveal.in-view .feature-card:nth-child(3),
-    .reveal.in-view .how-card:nth-child(3),
-    .reveal.in-view .use-card:nth-child(3),
-    .reveal.in-view .price-card:nth-child(3),
-    .reveal.in-view .prediction-card:nth-child(3),
-    .reveal.in-view .build-tag:nth-child(3) { transition-delay: 220ms; }
-    .reveal.in-view .build-tag:nth-child(4) { transition-delay: 290ms; }
-    .reveal.in-view .build-tag:nth-child(5) { transition-delay: 340ms; }
-    .reveal.in-view .build-tag:nth-child(6) { transition-delay: 390ms; }
-    .reveal.in-view .build-tag:nth-child(7) { transition-delay: 440ms; }
-    .reveal.in-view .build-tag:nth-child(8) { transition-delay: 490ms; }
-    .reveal.in-view .build-tag:nth-child(9) { transition-delay: 540ms; }
-    .reveal.in-view .build-tag:nth-child(10) { transition-delay: 590ms; }
-
-    .section-tag {
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--ds-gold-deep);
-      margin-bottom: 1.3rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .section-tag::before {
-      content: "";
-      width: 24px;
-      height: 0.5px;
-      background: var(--ds-gold-deep);
-      display: block;
-    }
-    .section-title {
-      font-family: var(--serif);
-      font-size: clamp(30px, 4vw, 48px);
-      font-weight: 300;
-      line-height: 1.15;
-      margin-bottom: 0.9rem;
-    }
-    .section-copy {
-      color: var(--ds-muted);
-      line-height: 1.75;
-      font-size: 15px;
-      max-width: 860px;
-    }
-
-    .problems {
-      padding-top: 3.1rem;
-      padding-bottom: 3.1rem;
-      border-bottom: 0.5px solid var(--ds-line);
-    }
-    .problem-grid {
-      margin-top: 2rem;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      background: var(--ds-line);
-    }
-    .problem-item {
-      background: var(--ds-white);
-      padding: 1.5rem;
-      border: 0.5px solid transparent;
-    }
-    .problem-item:hover { border-color: rgba(212,175,55,0.36); }
-    .problem-num {
-      font-family: var(--serif);
-      color: var(--ds-gold-deep);
-      margin-bottom: 0.6rem;
-      font-size: 12px;
-    }
-    .problem-title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      line-height: 1.4;
-    }
-    .problem-body {
-      color: var(--ds-muted);
-      font-size: 14px;
-      line-height: 1.7;
-    }
-
-    .solutions {
-      padding-top: 3.1rem;
-      padding-bottom: 3.1rem;
-      border-bottom: 0.5px solid var(--ds-line);
-      background: var(--ds-soft);
-    }
-    .feature-grid {
-      margin-top: 2rem;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-    .feature-card {
-      border: 0.5px solid var(--ds-line);
-      background: var(--ds-white);
-      padding: 1.35rem;
-    }
-    .feature-name {
-      font-size: 17px;
-      font-weight: 600;
-      margin-bottom: 0.45rem;
-    }
-    .feature-benefit {
-      font-size: 14px;
-      color: var(--ds-muted);
-      line-height: 1.7;
-      margin-bottom: 0.75rem;
-    }
-    .feature-outcome {
-      display: inline-block;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--ds-gold-deep);
-      border: 0.5px solid rgba(212,175,55,0.6);
-      padding: 4px 8px;
-    }
-
-    .how-it-works {
-      padding-top: 3.1rem;
-      padding-bottom: 3.1rem;
-      border-bottom: 0.5px solid var(--ds-line);
-      background: var(--ds-white);
-    }
-    .how-grid {
-      margin-top: 1.9rem;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
-    }
-    .how-card {
-      border: 0.5px solid var(--ds-line);
-      padding: 1.35rem;
-      background: var(--ds-white);
-    }
-    .how-step {
-      font-family: var(--serif);
-      color: var(--ds-gold-deep);
-      font-size: 14px;
-      margin-bottom: 0.45rem;
-    }
-    .how-title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 0.45rem;
-      line-height: 1.35;
-    }
-    .how-body {
-      color: var(--ds-muted);
-      font-size: 14px;
-      line-height: 1.7;
-    }
-
-    .use-cases {
-      padding-top: 3.1rem;
-      padding-bottom: 3.1rem;
-      border-bottom: 0.5px solid var(--ds-line);
-    }
-    .use-grid {
-      margin-top: 1.9rem;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
-    }
-    .use-card {
-      border: 0.5px solid var(--ds-line);
-      background: var(--ds-white);
-      padding: 1.35rem;
-    }
-    .use-title {
-      font-size: 17px;
-      font-weight: 600;
-      margin-bottom: 0.45rem;
-    }
-    .use-body {
-      color: var(--ds-muted);
-      font-size: 14px;
-      line-height: 1.7;
-      margin-bottom: 0.8rem;
-    }
-    .use-result {
-      color: var(--ds-black);
-      font-size: 13px;
-      font-weight: 500;
-      background: var(--ds-soft);
-      border-left: 2px solid var(--ds-gold);
-      padding: 8px 10px;
-    }
-
-    .live-demo {
-      padding-top: 3.1rem;
-      padding-bottom: 3.1rem;
-      border-bottom: 0.5px solid var(--ds-line);
-      background: var(--ds-soft);
-    }
-    .demo-shell {
-      margin-top: 1.6rem;
-      border: 0.5px solid var(--ds-line);
-      background: var(--ds-white);
-      padding: 1rem;
-    }
-    .demo-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      border-bottom: 0.5px solid var(--ds-line);
-      padding-bottom: 0.8rem;
-      margin-bottom: 0.9rem;
-      flex-wrap: wrap;
-    }
-    .demo-title {
-      font-size: 14px;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--ds-gold-deep);
-      font-weight: 600;
-    }
-    .demo-status {
-      font-size: 12px;
-      color: #426b1f;
-      background: #f0f8e9;
-      border: 0.5px solid #d5e8c8;
-      padding: 5px 10px;
-    }
-    .demo-grid {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 1rem;
-    }
-    .demo-panel {
-      border: 0.5px solid var(--ds-line);
-      padding: 1rem;
-      background: var(--ds-white);
-      min-height: 220px;
-    }
-    .demo-panel h4 {
-      font-size: 16px;
-      margin-bottom: 0.6rem;
-    }
-    .demo-panel p {
-      color: var(--ds-muted);
-      font-size: 14px;
-      line-height: 1.7;
-      margin-bottom: 0.8rem;
-    }
-    .demo-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.55rem;
-    }
-    .demo-list li {
-      font-size: 13px;
-      color: var(--ds-black);
-      padding: 8px 10px;
-      background: var(--ds-soft);
-      border-left: 2px solid var(--ds-gold);
-    }
-    .demo-actions {
-      margin-top: 1rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.7rem;
-    }
-
-    .demo-workspace {
-      display: none;
-      min-height: 100vh;
-      background: var(--ds-white);
-      color: var(--ds-black);
-    }
-    .demo-workspace.show {
-      display: block;
-      animation: workspaceIn 420ms cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .demo-workspace-head {
-      position: sticky;
-      top: 0;
-      z-index: 25;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem max(var(--page-pad), calc((100vw - var(--page-max)) / 2));
-      background: var(--ds-white);
-      border-bottom: 0.5px solid var(--ds-line);
-      backdrop-filter: blur(10px);
-    }
-    .demo-workspace-brand {
-      font-family: var(--serif);
-      font-size: 22px;
-      letter-spacing: 0.04em;
-    }
-    .demo-workspace-brand span {
-      color: var(--ds-gold);
-    }
-    .demo-workspace-actions {
-      display: flex;
-      gap: 0.65rem;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-    .demo-workspace-body {
-      padding: 2.2rem max(var(--page-pad), calc((100vw - var(--page-max)) / 2)) 3rem;
-    }
-    .demo-workspace-intro {
-      max-width: 880px;
-      margin-bottom: 1.4rem;
-    }
-    .demo-workspace-intro h2 {
-      font-family: var(--serif);
-      font-size: clamp(34px, 5vw, 62px);
-      font-weight: 300;
-      line-height: 1.02;
-      margin: 0.45rem 0 0.8rem;
-    }
-    .demo-workspace-intro p {
-      color: var(--ds-muted);
-      font-size: 15px;
-      line-height: 1.8;
-    }
-    .demo-builder {
-      display: grid;
-      grid-template-columns: minmax(260px, 0.82fr) minmax(0, 1.18fr);
-      gap: 1rem;
-      align-items: start;
-    }
-    .demo-picker,
-    .pipeline-preview {
-      border: 0.5px solid var(--ds-line);
-      background: var(--ds-white);
-      padding: 1rem;
-    }
-    .picker-label {
-      font-size: 11px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--ds-gold-deep);
-      margin-bottom: 0.8rem;
-      font-weight: 700;
-    }
-    .business-list,
-    .task-list {
-      display: grid;
-      gap: 0.6rem;
-    }
-    .business-card,
-    .task-chip {
-      text-align: left;
-      border: 0.5px solid var(--ds-line);
-      background: var(--ds-white);
-      color: var(--ds-black);
-      padding: 0.9rem;
-      cursor: pointer;
-      font-family: var(--sans);
-      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
-    }
-    .business-card:hover,
-    .task-chip:hover {
-      transform: translateY(-2px);
-      border-color: rgba(212,175,55,0.45);
-      background: var(--ds-soft);
-    }
-    .business-card.active,
-    .task-chip.active {
-      border-color: rgba(212,175,55,0.75);
-      background: var(--ds-soft);
-    }
-    .business-card strong,
-    .task-chip strong {
-      display: block;
-      font-size: 14px;
-      margin-bottom: 0.25rem;
-    }
-    .business-card span,
-    .task-chip span {
-      display: block;
-      color: var(--ds-muted);
-      font-size: 12px;
-      line-height: 1.5;
-    }
-    .task-panel {
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 0.5px solid var(--ds-line);
-    }
-    .pipeline-preview {
-      min-height: 560px;
-      overflow: hidden;
-    }
-    .pipeline-topline {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-    }
-    .pipeline-topline h3 {
-      font-family: var(--serif);
-      font-size: clamp(26px, 3vw, 42px);
-      font-weight: 300;
-      line-height: 1.08;
-      margin: 0;
-    }
-    .pipeline-outcome {
-      max-width: 340px;
-      color: var(--ds-black);
-      font-size: 13px;
-      line-height: 1.65;
-      background: var(--ds-soft);
-      border-left: 2px solid var(--ds-gold);
-      padding: 0.75rem 0.85rem;
-    }
-    .flowchart {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(120px, 1fr));
-      gap: 0.7rem;
-      margin-top: 1.2rem;
-    }
-    .flow-step {
-      position: relative;
-      min-height: 150px;
-      border: 0.5px solid var(--ds-line);
-      background: var(--ds-white);
-      padding: 0.85rem;
-      animation: flowStepIn 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
-      animation-delay: calc(var(--i) * 90ms);
-    }
-    .flow-step:not(:last-child)::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      right: -0.7rem;
-      width: 0.7rem;
-      height: 0.5px;
-      background: var(--ds-gold);
-    }
-    .flow-index {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 26px;
-      height: 26px;
-      border: 0.5px solid rgba(212,175,55,0.75);
-      color: var(--ds-gold-deep);
-      margin-bottom: 0.7rem;
-      font-size: 12px;
-      font-weight: 700;
-    }
-    .flow-step h4 {
-      margin: 0 0 0.35rem;
-      font-size: 14px;
-    }
-    .flow-step p {
-      margin: 0;
-      color: var(--ds-muted);
-      font-size: 12px;
-      line-height: 1.55;
-    }
-    .service-strip {
-      margin-top: 1rem;
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 0.6rem;
-    }
-    .service-pill {
-      border: 0.5px solid var(--ds-line);
-      padding: 0.75rem;
-      font-size: 12px;
-      color: var(--ds-black);
-      background: var(--ds-soft);
-    }
-
-    .keywords-section {
-      padding-top: 3.1rem;
-      padding-bottom: 3.1rem;
-      border-bottom: 0.5px solid var(--ds-line);
-      background: var(--ds-white);
-    }
-    .seo-keyword-text {
-      margin-top: 1rem;
-      max-width: 980px;
-      font-size: 15px;
-      color: var(--ds-black);
-      line-height: 1.9;
-    }
-
-    .pricing {
-      padding-top: 3.1rem;
-      padding-bottom: 3.1rem;
-      border-bottom: 0.5px solid var(--ds-line);
-      background: var(--ds-soft);
-    }
-    .pricing-note {
-      margin-top: 0.9rem;
-      font-size: 13px;
-      color: var(--ds-muted);
-      background: var(--ds-soft);
-      border-left: 2px solid var(--ds-gold);
-      display: inline-block;
-      padding: 8px 12px;
-    }
-    .pricing-grid {
-      margin-top: 1.8rem;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
-    }
-    .price-card {
-      border: 0.5px solid var(--ds-line);
-      background: var(--ds-white);
-      padding: 1.35rem;
-      display: flex;
-      flex-direction: column;
-    }
-    .price-card.featured {
-      border-color: rgba(212,175,55,0.6);
-      box-shadow: 0 8px 20px rgba(212,175,55,0.14);
-    }
-    .price-tier {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--ds-gold-deep);
-      margin-bottom: 0.6rem;
-      font-weight: 600;
-    }
-    .plan-fit {
-      font-size: 12px;
-      color: var(--ds-muted);
-      margin-bottom: 0.9rem;
-    }
-    .price-amount {
-      font-family: var(--serif);
-      font-size: 40px;
-      line-height: 1;
-      margin-bottom: 0.3rem;
-    }
-    .price-period {
-      font-size: 12px;
-      color: var(--ds-muted);
-      margin-bottom: 1.1rem;
-    }
-    .price-features {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      margin-bottom: 1.3rem;
-      flex: 1;
-    }
-    .price-features li {
-      color: var(--ds-muted);
-      font-size: 13px;
-      line-height: 1.55;
-      padding-left: 14px;
-      position: relative;
-    }
-    .price-features li::before {
-      content: "-";
-      position: absolute;
-      left: 0;
-      color: var(--ds-gold-deep);
-    }
-    .price-btn {
-      margin-top: auto;
-      width: 100%;
-      padding: 11px 14px;
-      border: 0.5px solid var(--ds-black);
-      background: var(--ds-black);
-      color: var(--ds-white);
-      cursor: pointer;
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-    .price-btn:hover {
-      background: var(--ds-gold-deep);
-      border-color: var(--ds-gold-deep);
-    }
-
-    .results {
-      padding-top: 3.1rem;
-      padding-bottom: 3.1rem;
-      border-bottom: 0.5px solid var(--ds-line);
-      background: var(--ds-white);
-    }
-    .prediction-grid {
-      margin-top: 2rem;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
-    }
-    .prediction-card {
-      border: 0.5px solid var(--ds-line);
-      background: var(--ds-white);
-      padding: 1.5rem;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .prediction-card:hover {
-      border-color: rgba(212,175,55,0.5);
-      box-shadow: 0 8px 24px rgba(212,175,55,0.1);
-    }
-    .pred-icon {
-      font-size: 28px;
-      margin-bottom: 0.8rem;
-    }
-    .pred-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-    .pred-header h4 {
-      font-size: 16px;
-      font-weight: 600;
-      line-height: 1.3;
-    }
-    .pred-stat {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      white-space: nowrap;
-      padding: 3px 8px;
-      border-radius: 3px;
-    }
-    .pred-stat.down {
-      color: #166534;
-      background: #f0fdf4;
-      border: 0.5px solid #bbf7d0;
-    }
-    .pred-stat.up {
-      color: #92400e;
-      background: #fffbeb;
-      border: 0.5px solid #fde68a;
-    }
-    .pred-visual {
-      margin-bottom: 1rem;
-    }
-    .pred-compare {
-      display: flex;
-      flex-direction: column;
-      gap: 0.7rem;
-    }
-    .pred-bar-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .pred-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--ds-muted);
-      font-weight: 600;
-    }
-    .pred-bar-track {
-      height: 28px;
-      background: #f5f5f5;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .pred-bar {
-      height: 100%;
-      display: flex;
-      align-items: center;
-      padding: 0 10px;
-      font-size: 11px;
-      font-weight: 600;
-      border-radius: 4px;
-      white-space: nowrap;
-      transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .pred-bar.old {
-      background: linear-gradient(90deg, #ddd, #c5c5c5);
-      color: var(--ds-muted);
-    }
-    .pred-bar.new {
-      background: linear-gradient(90deg, #D4AF37, #e8c74a);
-      color: #3a2f00;
-    }
-    .pred-timeline {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      border-left: 2px solid #e5e5e5;
-      padding-left: 14px;
-    }
-    .tl-step {
-      padding: 6px 0;
-      position: relative;
-    }
-    .tl-step::before {
-      content: "";
-      position: absolute;
-      left: -20px;
-      top: 12px;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #e0e0e0;
-      border: 2px solid #fff;
-    }
-    .tl-step.active::before {
-      background: var(--ds-gold);
-      box-shadow: 0 0 0 3px rgba(212,175,55,0.25);
-    }
-    .tl-month {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--ds-gold-deep);
-      font-weight: 700;
-      margin-bottom: 2px;
-    }
-    .tl-event {
-      font-size: 13px;
-      color: var(--ds-muted);
-      line-height: 1.4;
-    }
-    .pred-detail {
-      font-size: 13px;
-      color: var(--ds-muted);
-      line-height: 1.65;
-      margin: 0;
-    }
-
-    .build-showcase {
-      margin-top: 2rem;
-      padding: 1.5rem;
-      border: 0.5px solid var(--ds-line);
-      background: var(--ds-soft);
-    }
-    .build-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--ds-gold-deep);
-      font-weight: 700;
-      margin-bottom: 1rem;
-    }
-    .build-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    .build-tag {
-      border: 0.5px solid var(--ds-line);
-      background: var(--ds-white);
-      padding: 7px 12px;
-      font-size: 13px;
-      color: var(--ds-black);
-      transition: border-color 0.15s, background 0.15s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .build-tag svg {
-      flex-shrink: 0;
-    }
-    .build-tag:hover {
-      border-color: var(--ds-gold);
-      background: var(--ds-soft);
-    }
-
-    .pred-cta {
-      margin-top: 2rem;
-      text-align: center;
-      padding: 2rem 1rem;
-      border: 0.5px solid rgba(212,175,55,0.3);
-      background: var(--ds-soft);
-    }
-    .pred-cta p {
-      font-family: var(--serif);
-      font-size: 22px;
-      font-weight: 300;
-      margin-bottom: 1.2rem;
-      color: var(--ds-black);
-    }
-
-    .seo-block {
-      padding-top: 3.1rem;
-      padding-bottom: 3.1rem;
-      border-bottom: 0.5px solid var(--ds-line);
-      background: var(--ds-soft);
-    }
-    .seo-copy {
-      max-width: 980px;
-      font-size: 15px;
-      line-height: 1.85;
-      color: var(--ds-black);
-      margin-top: 0.9rem;
-    }
-
-    .cta-final {
-      padding-top: 3.6rem;
-      padding-bottom: 3.6rem;
-      text-align: center;
-      border-bottom: 0.5px solid var(--ds-line);
-      background: var(--ds-white);
-    }
-    .cta-final h2 {
-      font-family: var(--serif);
-      font-size: clamp(30px, 4.8vw, 54px);
-      font-weight: 300;
-      margin-bottom: 0.8rem;
-      line-height: 1.15;
-    }
-    .cta-final p {
-      max-width: 760px;
-      margin: 0 auto 1.6rem;
-      color: var(--ds-muted);
-      font-size: 15px;
-      line-height: 1.75;
-    }
-    .cta-row {
-      display: flex;
-      justify-content: center;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-
-    footer {
-      padding-top: 1.2rem;
-      padding-bottom: 1.2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-    }
-    .footer-copy {
-      font-size: 12px;
-      color: var(--ds-muted);
-    }
-    .footer-links {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .footer-links a {
-      font-size: 12px;
-      color: var(--ds-muted);
-      text-decoration: none;
-      cursor: pointer;
-    }
-    .footer-links a:hover { color: var(--ds-black); }
-
-    .cookie-banner {
-      position: fixed;
-      left: 1rem;
-      right: 1rem;
-      bottom: 1rem;
-      max-width: 980px;
-      margin: 0 auto;
-      background: rgba(10,10,10,0.96);
-      color: #fafaf8;
-      border: 0.5px solid rgba(255,255,255,0.22);
-      display: none;
-      gap: 1rem;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem;
-      z-index: 9000;
-    }
-    .cookie-banner.show { display: flex; }
-    .cookie-copy {
-      font-size: 13px;
-      line-height: 1.6;
-      max-width: 620px;
-      color: rgba(255,255,255,0.92);
-    }
-    .cookie-actions { display: flex; gap: 0.55rem; flex-wrap: wrap; }
-    .cookie-btn {
-      border: 0.5px solid rgba(255,255,255,0.35);
-      padding: 8px 12px;
-      background: transparent;
-      color: #fff;
-      cursor: pointer;
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-    .cookie-btn.primary {
-      background: var(--ds-gold-deep);
-      border-color: var(--ds-gold-deep);
-      color: #fff;
-    }
-
-    .lead-modal,
-    .policy-modal,
-    .account-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.62);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      z-index: 8500;
-    }
-    .lead-modal.show,
-    .policy-modal.show,
-    .account-modal.show { display: flex; }
-
-    body.modal-open {
-      overflow: hidden !important;
-      touch-action: none;
-    }
-
-    .modal-card {
-      width: min(560px, 96vw);
-      max-height: 85vh;
-      display: flex;
-      flex-direction: column;
-      background: var(--ds-white);
-      border: 0.5px solid var(--ds-line);
-      padding: 1.4rem;
-      border-radius: 16px;
-      animation: rise 280ms ease;
-    }
-
-    .policy-modal #policyBody,
-    .account-modal .modal-sub {
-      overflow-y: auto !important;
-      max-height: 60vh !important;
-      padding-right: 8px;
-    }
-
-    /* Sleek gold-themed scrollbar */
-    .policy-modal #policyBody::-webkit-scrollbar,
-    .account-modal .modal-sub::-webkit-scrollbar {
-      width: 5px;
-    }
-    .policy-modal #policyBody::-webkit-scrollbar-thumb,
-    .account-modal .modal-sub::-webkit-scrollbar-thumb {
-      background: var(--ds-gold-deep);
-      border-radius: 4px;
-    }
-    .policy-modal #policyBody::-webkit-scrollbar-track,
-    .account-modal .modal-sub::-webkit-scrollbar-track {
-      background: var(--ds-soft);
-    }
-    .modal-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-    .modal-title {
-      font-family: var(--serif);
-      font-size: 30px;
-      font-weight: 300;
-      line-height: 1.1;
-    }
-    .modal-close {
-      border: 0.5px solid var(--ds-line);
-      background: transparent;
-      width: 32px;
-      height: 32px;
-      cursor: pointer;
-      color: var(--ds-muted);
-      font-size: 16px;
-      border-radius: 8px;
-    }
-    .modal-sub {
-      color: var(--ds-muted);
-      font-size: 13px;
-      line-height: 1.7;
-      margin-bottom: 0.9rem;
-    }
-    .account-details {
-      border: 0.5px solid var(--ds-line);
-      border-radius: 12px;
-      margin-bottom: 1rem;
-      overflow: hidden;
-    }
-    .account-row {
-      display: grid;
-      grid-template-columns: 110px 1fr;
-      gap: 0.8rem;
-      padding: 0.75rem;
-      border-bottom: 0.5px solid var(--ds-line);
-      font-size: 13px;
-    }
-    .account-row:last-child {
-      border-bottom: none;
-    }
-    .account-label {
-      color: var(--ds-muted);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-size: 11px;
-    }
-    .account-value {
-      color: var(--ds-black);
-      overflow-wrap: anywhere;
-    }
-    .account-actions {
-      display: flex;
-      gap: 0.7rem;
-      flex-wrap: wrap;
-    }
-    .auth-tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      border: 0.5px solid var(--ds-line);
-      margin-bottom: 0.9rem;
-    }
-    .auth-tab {
-      border: none;
-      background: var(--ds-white);
-      color: var(--ds-muted);
-      padding: 10px;
-      font-family: var(--sans);
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      cursor: pointer;
-    }
-    .auth-tab.active {
-      background: var(--ds-black);
-      color: var(--ds-white);
-    }
-    .signin-form {
-      display: none;
-      grid-template-columns: 1fr;
-      gap: 0.8rem;
-    }
-    .signin-form.active {
-      display: grid;
-    }
-    .lead-form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.8rem;
-    }
-    .lead-form.auth-hidden {
-      display: none;
-    }
-    .lead-form .full { grid-column: 1 / -1; }
-    .lead-form input,
-    .lead-form select,
-    .lead-form textarea {
-      width: 100%;
-      border: 0.5px solid var(--ds-line);
-      background: var(--ds-white);
-      padding: 11px;
-      font-family: var(--sans);
-      font-size: 13px;
-    }
-    .lead-form textarea { min-height: 100px; resize: vertical; }
-    .lead-form button {
-      border: none;
-      background: var(--ds-black);
-      color: var(--ds-white);
-      padding: 12px;
-      cursor: pointer;
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-    .signin-form input,
-    .signin-form button {
-      width: 100%;
-      border: 0.5px solid var(--ds-line);
-      background: var(--ds-white);
-      padding: 11px;
-      font-family: var(--sans);
-      font-size: 13px;
-    }
-    
-    /* ── Smooth theme transition — direct property morphing, no flash overlay ── */
-    html.theme-transitioning,
-    html.theme-transitioning * {
-      transition:
-        background-color 500ms cubic-bezier(0.4, 0, 0.2, 1),
-        background       500ms cubic-bezier(0.4, 0, 0.2, 1),
-        color            500ms cubic-bezier(0.4, 0, 0.2, 1),
-        border-color     500ms cubic-bezier(0.4, 0, 0.2, 1),
-        box-shadow       500ms cubic-bezier(0.4, 0, 0.2, 1),
-        fill             500ms cubic-bezier(0.4, 0, 0.2, 1),
-        stroke           500ms cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-    /* Suppress transition during page load */
-    html.no-transition, html.no-transition * {
-      transition: none !important;
-    }
-
-    /* ── Minimalist Rotating Sun/Moon Toggle ── */
     .theme-icon-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--ds-black);
-      padding: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
-      margin-left: 1rem;
-      border-radius: 50%;
-      border: 1px solid var(--ds-line);
+      background: none; cursor: pointer; color: var(--ds-black); padding: 8px; display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--ds-line); border-radius: 50%; margin-left: 0.5rem;
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
-    .theme-icon-btn:hover {
-      transform: rotate(30deg) scale(1.15);
-      color: var(--ds-gold-deep) !important;
-      border-color: var(--ds-gold-deep);
-      box-shadow: 0 0 10px rgba(212,175,55,0.2);
-    }
-    html.light-theme {
-      --display-moon: block;
-      --display-sun: none;
-    }
-    html.dark-theme {
-      --display-moon: none;
-      --display-sun: block;
-    }
-    
-    .signin-form button {
-      border: none;
-      background: var(--ds-black);
-      color: var(--ds-white);
-      cursor: pointer;
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-weight: 600;
-    }
+    .theme-icon-btn .ico { width: 20px; height: 20px; }
+    .theme-icon-btn:hover { transform: rotate(30deg) scale(1.12); color: var(--ds-gold-text); border-color: var(--ds-gold-deep); box-shadow: 0 0 10px rgba(212,175,55,0.2); }
+    .theme-icon-sun { display: none; }
+    html.dark-theme .theme-icon-sun { display: block; }
+    html.dark-theme .theme-icon-moon { display: none; }
 
-    .toast {
-      position: fixed;
-      right: 1rem;
-      bottom: 1rem;
-      background: #101010;
-      color: var(--ds-white);
-      padding: 10px 14px;
-      font-size: 12px;
-      letter-spacing: 0.04em;
-      display: none;
-      z-index: 9200;
-      max-width: min(90vw, 360px);
-    }
-    .toast.show { display: block; }
-
-    @keyframes introWordEase {
-      0% { opacity: 0; transform: translateY(10px) scale(0.98); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    @keyframes introSubEase {
-      0% { opacity: 0; transform: translateY(8px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes workspaceIn {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes flowStepIn {
-      from { opacity: 0; transform: translateY(18px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes floatStage {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-7px); }
-    }
-    @keyframes haloDrift {
-      0%, 100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-10px) scale(1.05); }
-    }
-    @keyframes rise {
-      from { opacity: 0; transform: translateY(14px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── Hamburger button ── */
+    /* Hamburger + mobile menu */
     .nav-hamburger {
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 5px;
-      background: none;
-      border: 1px solid var(--ds-line);
-      border-radius: 6px;
-      padding: 8px 10px;
-      cursor: pointer;
-      color: var(--ds-black);
-      transition: border-color 0.2s, background 0.2s;
-      flex-shrink: 0;
+      display: none; flex-direction: column; justify-content: center; align-items: center; gap: 5px; background: none;
+      border: 1px solid var(--ds-line); border-radius: 6px; padding: 9px 10px; cursor: pointer; color: var(--ds-black);
+      transition: border-color 0.2s, background 0.2s; flex-shrink: 0;
     }
     .nav-hamburger:hover { border-color: var(--ds-gold-deep); background: rgba(212,175,55,0.06); }
-    .nav-hamburger span {
-      display: block;
-      width: 20px;
-      height: 2px;
-      background: currentColor;
-      border-radius: 2px;
-      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.2s;
-      transform-origin: center;
-    }
+    .nav-hamburger span { display: block; width: 20px; height: 2px; background: currentColor; border-radius: 2px; transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.2s; transform-origin: center; }
     .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
     .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-    /* ── Mobile menu drawer ── */
     .mobile-menu {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: var(--ds-white);
-      border-top: 0.5px solid var(--ds-line);
-      border-bottom: 0.5px solid var(--ds-line);
-      z-index: 8999;
-      flex-direction: column;
-      gap: 0;
-      overflow: hidden;
-      max-height: 0;
-      transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1);
+      display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--ds-white);
+      border-bottom: 0.5px solid var(--ds-line); z-index: 30; overflow: hidden; max-height: 0; visibility: hidden;
+      transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), visibility 0s linear 0.35s;
     }
-    .mobile-menu.open {
-      display: flex;
-      max-height: 600px;
-    }
-    .mobile-menu a, .mobile-menu .mobile-welcome {
-      display: block;
-      padding: 14px 20px;
-      font-size: 15px;
-      color: var(--ds-black);
-      text-decoration: none;
-      border-bottom: 0.5px solid var(--ds-line);
-      letter-spacing: 0.02em;
-      transition: background 0.15s, color 0.15s;
-    }
-    .mobile-menu a:last-child { border-bottom: none; }
-    .mobile-menu a:hover { background: rgba(212,175,55,0.07); color: var(--ds-gold-deep); }
-    .mobile-menu .mobile-signin {
-      margin: 12px 20px 16px;
-      background: var(--ds-black);
-      color: var(--ds-white) !important;
-      text-align: center;
-      border-radius: 4px;
-      font-weight: 600;
-      font-size: 13px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      border-bottom: none !important;
-      padding: 12px 20px !important;
-    }
-    .mobile-menu .mobile-signin:hover { background: var(--ds-gold-deep) !important; color: #fff !important; }
-    .mobile-menu .mobile-theme-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 20px;
-      border-bottom: 0.5px solid var(--ds-line);
-    }
-    .mobile-menu .mobile-theme-label {
-      font-size: 14px;
-      color: var(--ds-muted);
-    }
-    .mobile-menu .mobile-signout {
-      color: #ff4d4d !important;
-    }
+    .mobile-menu.open { max-height: 640px; visibility: visible; transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), visibility 0s; border-top: 0.5px solid var(--ds-line); }
+    .mobile-menu a, .mobile-menu .mobile-welcome { display: block; padding: 14px 20px; font-size: 15px; color: var(--ds-black); text-decoration: none; border-bottom: 0.5px solid var(--ds-line); transition: background 0.15s, color 0.15s; }
+    .mobile-menu a:hover { background: rgba(212,175,55,0.07); color: var(--ds-gold-text); }
+    .mobile-menu .mobile-signin { margin: 12px 20px 16px; text-align: center; border-radius: 6px; font-weight: 600; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid var(--ds-gold); color: var(--ds-gold-text); }
+    .mobile-menu .mobile-signin:hover { background: linear-gradient(135deg, var(--ds-gold), var(--ds-gold-deep)); color: var(--ds-on-gold); }
+    .mobile-theme-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 0.5px solid var(--ds-line); }
+    .mobile-theme-label { font-size: 14px; color: var(--ds-muted); }
+    .mobile-welcome { font-family: var(--serif); font-size: 14px !important; }
+    .mobile-signout { color: var(--ds-muted) !important; }
 
+    /* ───────── Buttons ───────── */
+    .btn-primary, .btn-secondary {
+      padding: 14px 28px; border-radius: 4px; cursor: pointer; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+      font-weight: 600; transition: all 0.3s ease; position: relative; overflow: hidden; display: inline-block; text-decoration: none; text-align: center;
+    }
+    .btn-primary { background: linear-gradient(135deg, var(--ds-gold) 0%, var(--ds-gold-deep) 100%); border: none; color: var(--ds-on-gold); box-shadow: 0 4px 20px rgba(212,175,55,0.4); }
+    .btn-primary::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent); transition: left 0.5s ease; }
+    .btn-primary:hover::before { left: 100%; }
+    .btn-primary:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 30px rgba(212,175,55,0.5); }
+    .btn-secondary { border: 1px solid var(--ds-gold); background: var(--ds-white); color: var(--ds-gold-text); box-shadow: 0 2px 10px rgba(212,175,55,0.2); }
+    .btn-secondary:hover { background: var(--ds-soft); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(212,175,55,0.3); }
+
+    /* ───────── Hero ───────── */
+    .hero {
+      padding-top: 4.2rem; padding-bottom: 3.4rem; border-bottom: 0.5px solid var(--ds-line); position: relative; overflow: hidden;
+      background: radial-gradient(circle at 88% 4%, rgba(212,175,55,0.15), rgba(212,175,55,0) 36%), linear-gradient(180deg, var(--ds-white), var(--ds-soft));
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 4l26 26-26 26L4 30z' fill='none' stroke='%23D4AF37' stroke-opacity='.12'/%3E%3C/svg%3E");
+      -webkit-mask-image: linear-gradient(180deg, #000, transparent 85%); mask-image: linear-gradient(180deg, #000, transparent 85%);
+    }
+    .hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: center; }
+    .hero-copy { min-width: 0; }
+    .hero-eyebrow { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ds-gold-text); margin-bottom: 1.2rem; display: flex; align-items: center; gap: 10px; }
+    .hero-eyebrow::before { content: ""; width: 28px; height: 0.5px; background: var(--ds-gold-deep); display: block; }
+    h1 { font-family: var(--serif); font-size: clamp(40px, 5.2vw, 72px); line-height: 1.04; letter-spacing: -0.02em; font-weight: 300; margin-bottom: 0.8rem; }
+    .hero-headline-line { width: 60px; height: 1px; background: linear-gradient(90deg, var(--ds-gold), var(--ds-gold-deep)); margin: 1rem 0 1.5rem; }
+    .hero-sub { max-width: 640px; font-size: 17px; color: var(--ds-muted); line-height: 1.75; margin-bottom: 1.3rem; }
+    .hero-use-case { font-size: 13px; color: var(--ds-black); margin-bottom: 2rem; padding: 10px 12px; border-left: 2px solid var(--ds-gold); background: var(--ds-soft); max-width: 640px; line-height: 1.6; }
+    .hero-actions { display: flex; gap: 1.2rem; align-items: center; flex-wrap: wrap; }
+    .hero-metric-row { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; margin-top: 3.2rem; }
+    .hero-metric { background: var(--ds-white); border: 1px solid var(--ds-line); border-radius: 8px; padding: 2.2rem 1.5rem; text-align: center; transition: all 0.3s ease; position: relative; overflow: hidden; }
+    .hero-metric::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--ds-gold), var(--ds-gold-deep)); opacity: 0; transition: opacity 0.3s ease; }
+    .hero-metric:hover::before { opacity: 1; }
+    .hero-metric:hover { border-color: var(--ds-gold); transform: translateY(-4px); box-shadow: 0 10px 30px rgba(212,175,55,0.15); }
+    .hero-metric-value { font-family: var(--serif); font-size: 34px; font-weight: 300; color: var(--ds-gold-text); margin-bottom: 0.5rem; line-height: 1.1; }
+    .hero-metric-label { font-size: 12px; color: var(--ds-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+
+    /* Hero visual: AIAS control-center image */
+    .hero-visual { position: relative; min-width: 0; padding: 14px; display: flex; align-items: center; justify-content: center; }
+    .hero-img {
+      width: 100%;
+      height: auto;
+      max-width: 100%;
+      display: block;
+      border-radius: 16px;
+      border: 1px solid var(--ds-line);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(212, 175, 55, 0.12);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+    .hero-img:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 35px 75px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(212, 175, 55, 0.25);
+    }
+    html.dark-theme .hero-img {
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(212, 175, 55, 0.2);
+    }
+    html.dark-theme .hero-img:hover {
+      box-shadow: 0 35px 80px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(212, 175, 55, 0.35);
+    }
+    .console { position: relative; border: 1px solid var(--ds-line); border-radius: 16px; background: var(--ds-white); box-shadow: 0 30px 70px rgba(0,0,0,0.2), 0 0 0 1px rgba(212,175,55,0.1); overflow: hidden; }
+    .console::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 2px; background: linear-gradient(90deg, transparent, var(--ds-gold), transparent); }
+    .console-head { display: flex; align-items: center; gap: 0.75rem; padding: 0.8rem 1rem; border-bottom: 1px solid var(--ds-line); background: var(--ds-soft); }
+    .console-dots { display: flex; gap: 6px; }
+    .console-dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--ds-line); border: 1px solid var(--ds-line); }
+    .console-title { flex: 1; font-size: 11.5px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ds-muted); font-weight: 600; }
+    .live-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ds-ok); background: var(--ds-ok-bg); border: 1px solid var(--ds-ok-line); padding: 4px 10px; border-radius: 999px; }
+    .live-pill b { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: pulseDot 1.6s ease-in-out infinite; }
+    .console-kpis { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--ds-line); }
+    .console-kpis > div { padding: 0.95rem 1rem; border-right: 1px solid var(--ds-line); min-width: 0; }
+    .console-kpis > div:last-child { border-right: none; }
+    .k-val { display: block; font-family: var(--serif); font-size: 30px; line-height: 1.1; color: var(--ds-gold-text); font-variant-numeric: tabular-nums; }
+    .k-lbl { display: block; margin-top: 2px; font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ds-muted); }
+    .console-body { padding: 1rem; display: grid; gap: 0.9rem; }
+    .agent-list { display: grid; gap: 0.55rem; }
+    .agent-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.75rem; align-items: center; padding: 0.65rem 0.75rem; border: 1px solid var(--ds-line); border-radius: 10px; background: var(--ds-soft); }
+    .agent-ico { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--ds-gold), var(--ds-gold-deep)); display: grid; place-items: center; }
+    .agent-ico .ico { width: 16px; height: 16px; color: var(--ds-on-gold); }
+    .agent-name { font-size: 13px; font-weight: 600; }
+    .agent-meta { font-size: 11.5px; color: var(--ds-muted); margin-top: 1px; }
+    .agent-bar { height: 4px; border-radius: 4px; background: var(--ds-track); overflow: hidden; margin-top: 7px; }
+    .agent-bar i { display: block; height: 100%; width: var(--w, 50%); background: linear-gradient(90deg, var(--ds-gold), var(--ds-gold-deep)); border-radius: 4px; transition: width 1.1s ease; }
+    .agent-status { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ds-ok); display: inline-flex; align-items: center; gap: 5px; }
+    .agent-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .feed-label, .spark-label { display: flex; justify-content: space-between; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ds-muted); font-weight: 600; margin-bottom: 0.45rem; }
+    .feed { list-style: none; display: grid; gap: 0.4rem; min-height: 124px; align-content: start; }
+    .feed li { display: flex; gap: 0.65rem; align-items: baseline; font-size: 12.5px; line-height: 1.45; padding: 0.5rem 0.65rem; border-left: 2px solid var(--ds-gold); background: var(--ds-soft); animation: feedIn 420ms ease both; }
+    .feed time { font-variant-numeric: tabular-nums; color: var(--ds-muted); font-size: 11px; flex-shrink: 0; }
+    .feed strong { font-weight: 600; }
+    .spark { width: 100%; height: 56px; display: block; }
+    .spark .area { fill: rgba(212,175,55,0.14); }
+    .spark .line { fill: none; stroke: var(--ds-gold); stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: drawLine 1.8s ease forwards 0.5s; }
+    .console-note { font-size: 10.5px; color: var(--ds-muted); text-align: right; letter-spacing: 0.04em; }
+    .float-chip {
+      position: absolute; display: flex; align-items: center; gap: 8px; padding: 9px 13px; background: var(--ds-white);
+      border: 1px solid var(--ds-line); border-radius: 12px; box-shadow: 0 14px 34px rgba(0,0,0,0.2);
+      font-size: 12px; font-weight: 600; z-index: 3; animation: floatStage 5s ease-in-out infinite;
+    }
+    .float-chip .ico { width: 15px; height: 15px; color: var(--ds-gold-text); }
+    .float-chip.c1 { top: -4px; right: -6px; }
+    .float-chip.c2 { bottom: -6px; left: -10px; animation-delay: 1.4s; }
+
+    /* ───────── Integrations marquee ───────── */
+    .stack-band { padding-top: 1.7rem; padding-bottom: 1.7rem; border-bottom: 0.5px solid var(--ds-line); }
+    .stack-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ds-gold-text); text-align: center; margin-bottom: 1rem; font-weight: 600; }
+    .marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+    .marquee-track { display: flex; gap: 0.8rem; width: max-content; animation: marquee 40s linear infinite; }
+    .marquee:hover .marquee-track { animation-play-state: paused; }
+    .stack-chip { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border: 1px solid var(--ds-line); border-radius: 999px; background: var(--ds-soft); font-size: 13px; white-space: nowrap; transition: border-color 0.2s, transform 0.2s; }
+    .stack-chip:hover { border-color: var(--ds-gold); transform: translateY(-2px); }
+    .stack-chip .ico { width: 15px; height: 15px; color: var(--ds-gold-text); }
+
+    .tagline-band { padding-top: 1.6rem; padding-bottom: 1.6rem; border-bottom: 0.5px solid var(--ds-line); background: var(--ds-soft); display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+    .tagline-band p { font-family: var(--serif); font-size: 24px; font-weight: 300; max-width: 700px; line-height: 1.3; }
+    .band-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ds-gold-text); text-align: right; line-height: 1.6; }
+
+    /* ───────── Scroll reveal (animation-based so hover is never delayed) ───────── */
+    .reveal { transition: opacity 560ms ease, transform 560ms ease; }
+    html.js .reveal:not(.in-view) { opacity: 0; transform: translateY(16px); }
+    html.js .reveal:not(.in-view) :is(.problem-item, .feature-card, .how-card, .use-card, .price-card, .prediction-card, .build-tag) { opacity: 0; }
+    .reveal.in-view :is(.problem-item, .feature-card, .how-card, .use-card, .price-card, .prediction-card, .build-tag) { animation: cardIn 600ms cubic-bezier(0.22,1,0.36,1) backwards; }
+    .reveal.in-view :is(.problem-item, .feature-card, .how-card, .use-card, .price-card, .prediction-card, .build-tag):nth-child(2) { animation-delay: 80ms; }
+    .reveal.in-view :is(.problem-item, .feature-card, .how-card, .use-card, .price-card, .prediction-card, .build-tag):nth-child(3) { animation-delay: 160ms; }
+    .reveal.in-view :is(.problem-item, .feature-card, .how-card, .use-card, .price-card, .prediction-card, .build-tag):nth-child(4) { animation-delay: 240ms; }
+    .reveal.in-view :is(.build-tag):nth-child(5) { animation-delay: 300ms; }
+    .reveal.in-view :is(.build-tag):nth-child(6) { animation-delay: 360ms; }
+    .reveal.in-view :is(.build-tag):nth-child(7) { animation-delay: 420ms; }
+    .reveal.in-view :is(.build-tag):nth-child(8) { animation-delay: 480ms; }
+    .reveal.in-view :is(.build-tag):nth-child(9) { animation-delay: 540ms; }
+
+    /* ───────── Section typography ───────── */
+    .section-tag { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ds-gold-text); margin-bottom: 1.3rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+    .section-tag::before { content: ""; width: 24px; height: 0.5px; background: var(--ds-gold-deep); display: block; }
+    .section-title { font-family: var(--serif); font-size: clamp(30px, 4vw, 48px); font-weight: 300; line-height: 1.15; margin-bottom: 0.9rem; }
+    .section-copy { color: var(--ds-muted); line-height: 1.75; font-size: 15px; max-width: 860px; }
+
+    .problems, .solutions, .how-it-works, .use-cases, .live-demo, .keywords-section, .pricing, .results, .cta-final { padding-top: 6rem; padding-bottom: 6rem; position: relative; }
+
+    /* Shared card look */
+    .problem-item, .feature-card, .how-card, .use-card, .price-card, .prediction-card {
+      background: var(--ds-white); border: 1px solid var(--ds-line); border-radius: 12px; padding: 3rem 2rem 2rem; text-align: center;
+      transition: all 0.3s ease; position: relative; overflow: hidden;
+    }
+    .price-card, .prediction-card { border-radius: 16px; }
+    .problem-item::before, .feature-card::before, .how-card::before, .use-card::before, .price-card::before, .prediction-card::before {
+      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 40px; height: 3px;
+      background: linear-gradient(90deg, var(--ds-gold), var(--ds-gold-deep)); opacity: 0; transition: opacity 0.3s ease;
+    }
+    .problem-item:hover::before, .feature-card:hover::before, .how-card:hover::before, .use-card:hover::before, .price-card:hover::before, .prediction-card:hover::before { opacity: 1; }
+    .problem-item:hover, .feature-card:hover, .how-card:hover, .use-card:hover, .price-card:hover, .prediction-card:hover {
+      border-color: var(--ds-gold); transform: translateY(-6px); box-shadow: 0 20px 40px rgba(212,175,55,0.1);
+    }
+    .problem-icon, .feature-icon, .use-icon, .pred-icon {
+      width: 60px; height: 60px; margin: 0 auto 1.8rem; background: linear-gradient(135deg, var(--ds-gold) 0%, var(--ds-gold-deep) 100%);
+      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    }
+    .problem-icon .ico, .feature-icon .ico, .use-icon .ico, .pred-icon .ico { width: 28px; height: 28px; color: var(--ds-on-gold); stroke-width: 1.7; }
+
+    /* Problems */
+    .problem-grid { margin-top: 3rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+    .problem-title, .feature-name, .use-title { font-family: var(--serif); font-size: 22px; font-weight: 400; margin-bottom: 0.75rem; line-height: 1.25; }
+    .problem-body, .feature-benefit, .how-body, .use-body { font-size: 15px; color: var(--ds-muted); line-height: 1.7; }
+
+    /* Features */
+    .feature-grid { margin-top: 3rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+    .feature-benefit { margin-bottom: 0.9rem; }
+    .feature-outcome { display: inline-block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ds-gold-text); border: 0.5px solid rgba(212,175,55,0.6); padding: 5px 10px; font-weight: 600; line-height: 1.5; }
+    .founder { background: linear-gradient(180deg, var(--ds-soft) 0%, rgba(212,175,55,0.05) 50%, var(--ds-soft) 100%); border-bottom: 0.5px solid var(--ds-line); }
+    .founder .section-tag { display: inline-flex; background: var(--ds-gold-deep); color: #fff; padding: 5px 12px; }
+    .founder .section-tag::before { display: none; }
+    .founder .feature-card { border-left: 3px solid var(--ds-gold-deep); }
+    .founder .feature-outcome { background: rgba(212,175,55,0.1); border-color: var(--ds-gold-deep); }
+
+    /* How */
+    .how-grid { margin-top: 3rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+    .how-step { font-family: var(--serif); font-size: 48px; font-weight: 300; color: var(--ds-gold-text); margin-bottom: 1rem; line-height: 1; }
+    .how-title { font-family: var(--serif); font-size: 22px; font-weight: 400; margin-bottom: 0.8rem; }
+
+    /* Use cases */
+    .use-grid { margin-top: 3rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+    .use-body { margin-bottom: 1rem; }
+    .use-result { font-size: 13px; font-weight: 500; background: var(--ds-soft); border-left: 2px solid var(--ds-gold); padding: 8px 10px; text-align: left; line-height: 1.55; }
+
+    /* Live demo */
+    .demo-shell { margin-top: 2.5rem; background: var(--ds-white); border-radius: 16px; padding: 1.4rem; border: 1px solid var(--ds-line); }
+    .demo-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-bottom: 0.5px solid var(--ds-line); padding-bottom: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .demo-toolbar-left { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+    .demo-title { font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.02em; color: var(--ds-gold-text); font-weight: 600; }
+    .demo-status { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ds-muted); background: var(--ds-soft); border: 0.5px solid var(--ds-line); padding: 5px 10px; border-radius: 999px; transition: all 0.25s; }
+    .demo-status.running { color: var(--ds-gold-text); border-color: var(--ds-gold); }
+    .demo-status.done { color: var(--ds-ok); background: var(--ds-ok-bg); border-color: var(--ds-ok-line); }
+    .demo-toolbar-actions { display: flex; gap: 0.7rem; flex-wrap: wrap; }
+    .demo-btn { padding: 11px 22px; border-radius: 6px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; transition: all 0.3s ease; border: 1px solid var(--ds-gold); background: var(--ds-white); color: var(--ds-gold-text); cursor: pointer; }
+    .demo-btn:hover, .demo-btn.active { background: linear-gradient(135deg, var(--ds-gold) 0%, var(--ds-gold-deep) 100%); color: var(--ds-on-gold); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(212,175,55,0.3); }
+    .demo-log { min-height: 250px; max-height: 320px; overflow: auto; background: #0d0d0d; color: #e8e4d8; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 1.1rem 1.2rem; font-family: var(--mono); font-size: 12.5px; line-height: 1.8; white-space: pre-wrap; word-break: break-word; }
+    .demo-log .ln { display: block; animation: feedIn 300ms ease both; }
+    .demo-log .t { color: #7d786c; }
+    .demo-log .tag { color: #D4AF37; }
+    .demo-log .ok { color: #8fd16a; }
+    .demo-log .dim { color: #8a8578; }
+    .live-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-top: 1.8rem; }
+    .live-metric { text-align: center; }
+    .live-metric-value { font-family: var(--serif); font-size: 36px; font-weight: 300; color: var(--ds-gold-text); margin-bottom: 0.4rem; }
+    .live-metric-label { font-size: 12px; color: var(--ds-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+
+    /* Demo workspace */
+    .demo-workspace { display: none; min-height: 100vh; background: var(--ds-white); color: var(--ds-black); }
+    .demo-workspace.show { display: block; animation: workspaceIn 420ms cubic-bezier(0.22,1,0.36,1); }
+    .demo-workspace-head { position: sticky; top: 0; z-index: 25; display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1rem max(var(--page-pad), calc((100vw - var(--page-max)) / 2)); background: var(--ds-white); border-bottom: 0.5px solid var(--ds-line); }
+    .demo-workspace-actions { display: flex; gap: 0.65rem; flex-wrap: wrap; justify-content: flex-end; }
+    .demo-workspace-body { padding: 2.2rem max(var(--page-pad), calc((100vw - var(--page-max)) / 2)) 3rem; }
+    .demo-workspace-intro { max-width: 880px; margin-bottom: 1.4rem; }
+    .demo-workspace-intro h2 { font-family: var(--serif); font-size: clamp(34px, 5vw, 62px); font-weight: 300; line-height: 1.04; margin: 0.45rem 0 0.8rem; }
+    .demo-workspace-intro p { color: var(--ds-muted); font-size: 15px; line-height: 1.8; }
+    .demo-builder { display: grid; grid-template-columns: minmax(260px, 0.82fr) minmax(0, 1.18fr); gap: 1rem; align-items: start; }
+    .demo-picker, .pipeline-preview { border: 0.5px solid var(--ds-line); background: var(--ds-white); padding: 1rem; }
+    .picker-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ds-gold-text); margin-bottom: 0.8rem; font-weight: 700; }
+    .business-list, .task-list { display: grid; gap: 0.6rem; }
+    .business-card, .task-chip { text-align: left; border: 0.5px solid var(--ds-line); background: var(--ds-white); color: var(--ds-black); padding: 0.9rem; cursor: pointer; transition: transform 180ms ease, border-color 180ms ease, background 180ms ease; }
+    .business-card:hover, .task-chip:hover { transform: translateY(-2px); border-color: rgba(212,175,55,0.45); background: var(--ds-soft); }
+    .business-card.active, .task-chip.active { border-color: rgba(212,175,55,0.8); background: var(--ds-soft); }
+    .business-card strong, .task-chip strong { display: block; font-size: 14px; margin-bottom: 0.25rem; }
+    .business-card span, .task-chip span { display: block; color: var(--ds-muted); font-size: 12px; line-height: 1.5; }
+    .task-panel { margin-top: 1rem; padding-top: 1rem; border-top: 0.5px solid var(--ds-line); }
+    .pipeline-preview { min-height: 560px; overflow: hidden; }
+    .pipeline-topline { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .pipeline-topline h3 { font-family: var(--serif); font-size: clamp(26px, 3vw, 42px); font-weight: 300; line-height: 1.1; }
+    .pipeline-outcome { max-width: 340px; font-size: 13px; line-height: 1.65; background: var(--ds-soft); border-left: 2px solid var(--ds-gold); padding: 0.75rem 0.85rem; }
+    .flowchart { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.7rem; margin-top: 1.2rem; }
+    .flow-step { position: relative; min-height: 150px; border: 0.5px solid var(--ds-line); background: var(--ds-white); padding: 0.85rem; animation: flowStepIn 460ms cubic-bezier(0.22,1,0.36,1) both; animation-delay: calc(var(--i) * 90ms); }
+    .flow-step:not(:last-child)::after { content: ""; position: absolute; top: 50%; right: -0.7rem; width: 0.7rem; height: 0.5px; background: var(--ds-gold); }
+    .flow-index { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border: 0.5px solid rgba(212,175,55,0.75); color: var(--ds-gold-text); margin-bottom: 0.7rem; font-size: 12px; font-weight: 700; }
+    .flow-step h4 { margin: 0 0 0.35rem; font-size: 14px; }
+    .flow-step p { color: var(--ds-muted); font-size: 12px; line-height: 1.55; }
+    .service-strip { margin-top: 1rem; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.6rem; }
+    .service-pill { border: 0.5px solid var(--ds-line); padding: 0.75rem; font-size: 12px; background: var(--ds-soft); }
+
+    /* Keywords */
+    .seo-keyword-text { margin-top: 1.5rem; max-width: 980px; font-size: 16px; color: var(--ds-muted); line-height: 1.8; }
+    .seo-keywords { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .seo-keyword { display: inline-block; background: var(--ds-white); border: 1px solid var(--ds-line); border-radius: 4px; padding: 8px 16px; font-size: 13px; color: var(--ds-gold-text); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.3s ease; cursor: default; }
+    .seo-keyword:hover { background: linear-gradient(135deg, var(--ds-gold) 0%, var(--ds-gold-deep) 100%); color: var(--ds-on-gold); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(212,175,55,0.2); }
+
+    /* Pricing */
+    .pricing-note { margin-top: 1.5rem; font-size: 13px; color: var(--ds-muted); border-left: 2px solid var(--ds-gold); display: inline-block; padding: 8px 12px; }
+    .pricing-grid { margin-top: 3rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+    .price-card.featured { border: 2px solid var(--ds-gold); box-shadow: 0 8px 30px rgba(212,175,55,0.2); }
+    .price-tier { font-family: var(--serif); font-size: 22px; font-weight: 400; color: var(--ds-gold-text); margin-bottom: 0.6rem; }
+    .plan-fit { font-size: 14px; color: var(--ds-muted); margin-bottom: 1.5rem; min-height: 2.8em; line-height: 1.4; }
+    .price-amount { font-family: var(--serif); font-size: 48px; font-weight: 300; color: var(--ds-gold); margin-bottom: 0.3rem; line-height: 1.1; }
+    .price-period { font-size: 13px; color: var(--ds-muted); margin-bottom: 2rem; }
+    .price-features { list-style: none; display: grid; gap: 0.9rem; margin-bottom: 2rem; text-align: left; padding: 0 0.5rem; }
+    .price-features li { font-size: 15px; color: var(--ds-muted); line-height: 1.5; padding-left: 26px; position: relative; }
+    .price-features li::before { content: ''; position: absolute; left: 4px; top: 4px; width: 5px; height: 9px; border: solid var(--ds-gold-deep); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+    .price-btn { padding: 14px 32px; border-radius: 8px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.3s ease; border: 1px solid var(--ds-gold); background: var(--ds-white); color: var(--ds-gold-text); cursor: pointer; }
+    .price-btn:hover { background: linear-gradient(135deg, var(--ds-gold) 0%, var(--ds-gold-deep) 100%); color: var(--ds-on-gold); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(212,175,55,0.3); }
+
+    /* Growth predictions */
+    .prediction-grid { margin-top: 3rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+    .pred-header { margin-bottom: 1.2rem; }
+    .pred-header h4 { font-family: var(--serif); font-size: 22px; font-weight: 400; margin-bottom: 0.4rem; }
+    .pred-stat { font-family: var(--serif); font-size: 22px; font-weight: 400; color: var(--ds-gold-text); }
+    .pred-visual { margin-bottom: 1.2rem; text-align: left; }
+    .pred-compare { display: flex; flex-direction: column; gap: 0.8rem; }
+    .pred-bar-wrap { display: flex; flex-direction: column; gap: 4px; }
+    .pred-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ds-muted); font-weight: 600; }
+    .pred-bar-track { height: 28px; background: var(--ds-track); border-radius: 4px; overflow: hidden; }
+    .pred-bar { height: 100%; display: flex; align-items: center; padding: 0 10px; font-size: 11px; font-weight: 600; border-radius: 4px; white-space: nowrap; transform-origin: left; }
+    .reveal.in-view .pred-bar { animation: growBar 1s cubic-bezier(0.22,1,0.36,1) 0.3s backwards; }
+    .pred-bar.old { background: linear-gradient(90deg, #cfcabb, #b9b3a0); color: #3a362b; }
+    .pred-bar.new { background: linear-gradient(90deg, #D4AF37, #e8c74a); color: #3a2f00; }
+    .pred-timeline { display: flex; flex-direction: column; border-left: 2px solid var(--ds-line); padding-left: 16px; text-align: left; margin-left: 4px; }
+    .tl-step { padding: 6px 0; position: relative; }
+    .tl-step::before { content: ""; position: absolute; left: -23px; top: 12px; width: 10px; height: 10px; border-radius: 50%; background: var(--ds-track); border: 2px solid var(--ds-white); }
+    .tl-step.active::before { background: var(--ds-gold); box-shadow: 0 0 0 3px rgba(212,175,55,0.25); }
+    .tl-month { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ds-gold-text); font-weight: 700; margin-bottom: 2px; }
+    .tl-event { font-size: 13px; color: var(--ds-muted); line-height: 1.4; }
+    .pred-detail { font-size: 13px; color: var(--ds-muted); line-height: 1.65; }
+    .results-disclaimer { margin-top: 1rem; font-size: 12px; color: var(--ds-muted); }
+    .build-showcase { margin-top: 2rem; padding: 1.5rem; border: 0.5px solid var(--ds-line); background: var(--ds-soft); }
+    .build-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ds-gold-text); font-weight: 700; margin-bottom: 1rem; }
+    .build-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .build-tag { border: 0.5px solid var(--ds-line); background: var(--ds-white); padding: 7px 12px; font-size: 13px; transition: border-color 0.15s, background 0.15s; display: inline-flex; align-items: center; gap: 7px; }
+    .build-tag .ico { width: 14px; height: 14px; color: var(--ds-gold-text); }
+    .build-tag:hover { border-color: var(--ds-gold); background: var(--ds-soft); }
+    .pred-cta { margin-top: 2rem; text-align: center; padding: 2rem 1rem; border: 0.5px solid rgba(212,175,55,0.3); background: var(--ds-soft); }
+    .pred-cta p { font-family: var(--serif); font-size: 24px; font-weight: 300; margin-bottom: 1.2rem; }
+
+    .seo-block { padding-top: 3.1rem; padding-bottom: 3.1rem; border-bottom: 0.5px solid var(--ds-line); background: var(--ds-soft); }
+    .seo-copy { max-width: 980px; font-size: 15px; line-height: 1.85; margin-top: 0.9rem; }
+
+    .cta-final { text-align: center; overflow: hidden; }
+    .cta-final h2 { font-family: var(--serif); font-size: clamp(36px, 5vw, 60px); font-weight: 300; margin-bottom: 1.5rem; line-height: 1.15; }
+    .cta-final p { max-width: 760px; margin: 0 auto 2rem; color: var(--ds-muted); font-size: 16px; line-height: 1.8; }
+    .cta-row { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-top: 2rem; }
+    .cta-btn { padding: 16px 40px; border-radius: 6px; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.3s ease; border: 1px solid var(--ds-gold); background: var(--ds-white); color: var(--ds-gold-text); cursor: pointer; }
+    .cta-btn:hover { background: linear-gradient(135deg, var(--ds-gold) 0%, var(--ds-gold-deep) 100%); color: var(--ds-on-gold); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(212,175,55,0.3); }
+
+    footer { padding-top: 2rem; padding-bottom: 2rem; border-top: 1px solid var(--ds-line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; }
+    .footer-copy { font-size: 13px; color: var(--ds-muted); font-family: var(--serif); }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { font-size: 13px; color: var(--ds-muted); text-decoration: none; cursor: pointer; position: relative; transition: color 0.3s ease; }
+    .footer-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1px; background: var(--ds-gold-deep); transition: width 0.3s ease; }
+    .footer-links a:hover { color: var(--ds-gold-text); }
+    .footer-links a:hover::after { width: 100%; }
+
+    /* Cookie / modals / toast */
+    .cookie-banner { position: fixed; left: 1rem; right: 1rem; bottom: 1rem; max-width: 980px; margin: 0 auto; background: rgba(10,10,10,0.96); color: #fafaf8; border: 0.5px solid rgba(255,255,255,0.22); border-radius: 8px; display: none; gap: 1rem; align-items: center; justify-content: space-between; padding: 1rem; z-index: 9000; }
+    .cookie-banner.show { display: flex; }
+    .cookie-copy { font-size: 13px; line-height: 1.6; max-width: 620px; color: rgba(255,255,255,0.92); }
+    .cookie-actions { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+    .cookie-btn { border: 0.5px solid rgba(255,255,255,0.35); padding: 8px 12px; background: transparent; color: #fff; cursor: pointer; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .cookie-btn.primary { background: var(--ds-gold-deep); border-color: var(--ds-gold-deep); }
+    .policy-modal, .account-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.62); display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 8500; }
+    .policy-modal.show, .account-modal.show { display: flex; }
+    body.modal-open { overflow: hidden !important; touch-action: none; }
+    .modal-card { width: min(560px, 96vw); max-height: 85vh; display: flex; flex-direction: column; background: var(--ds-white); border: 0.5px solid var(--ds-line); padding: 1.4rem; border-radius: 16px; animation: rise 280ms ease; }
+    .policy-modal #policyBody, .account-modal .modal-sub { overflow-y: auto; max-height: 60vh; padding-right: 8px; }
+    .policy-modal #policyBody::-webkit-scrollbar { width: 5px; }
+    .policy-modal #policyBody::-webkit-scrollbar-thumb { background: var(--ds-gold-deep); border-radius: 4px; }
+    .policy-modal #policyBody::-webkit-scrollbar-track { background: var(--ds-soft); }
+    .modal-head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+    .modal-title { font-family: var(--serif); font-size: 30px; font-weight: 300; line-height: 1.1; }
+    .modal-close { border: 0.5px solid var(--ds-line); background: transparent; width: 32px; height: 32px; cursor: pointer; color: var(--ds-muted); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .modal-close .ico { width: 14px; height: 14px; stroke-width: 2.5; }
+    .modal-sub { color: var(--ds-muted); font-size: 13px; line-height: 1.7; margin-bottom: 0.9rem; }
+    .account-details { border: 0.5px solid var(--ds-line); border-radius: 12px; margin-bottom: 1rem; overflow: hidden; }
+    .account-row { display: grid; grid-template-columns: 110px 1fr; gap: 0.8rem; padding: 0.75rem; border-bottom: 0.5px solid var(--ds-line); font-size: 13px; }
+    .account-row:last-child { border-bottom: none; }
+    .account-label { color: var(--ds-muted); letter-spacing: 0.08em; text-transform: uppercase; font-size: 11px; }
+    .account-value { overflow-wrap: anywhere; }
+    .account-actions { display: flex; gap: 0.7rem; flex-wrap: wrap; }
+    .toast { position: fixed; right: 1rem; bottom: 1rem; background: #101010; color: #fff; padding: 10px 14px; border-radius: 6px; font-size: 12px; letter-spacing: 0.04em; display: none; z-index: 9200; max-width: min(90vw, 360px); border: 0.5px solid rgba(255,255,255,0.15); }
+    .toast.show { display: block; }
+
+    /* Smooth theme change */
+    html.theme-transitioning, html.theme-transitioning * { transition: background-color 500ms cubic-bezier(0.4,0,0.2,1), color 500ms cubic-bezier(0.4,0,0.2,1), border-color 500ms cubic-bezier(0.4,0,0.2,1), box-shadow 500ms cubic-bezier(0.4,0,0.2,1), fill 500ms, stroke 500ms !important; }
+
+    /* ───────── Keyframes ───────── */
+    @keyframes markIn { from { opacity: 0; transform: scale(0.7) rotate(-8deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+    @keyframes letterIn { from { opacity: 0; transform: translateY(18px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes wordIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes workspaceIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes flowStepIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes floatStage { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+    @keyframes haloDrift { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
+    @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes cardIn { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes feedIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes pulseDot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.8); } }
+    @keyframes drawLine { to { stroke-dashoffset: 0; } }
+    @keyframes growBar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    @keyframes marquee { to { transform: translateX(calc(-50% - 0.4rem)); } }
+
+    /* ───────── Responsive ───────── */
+    @media (max-width: 1180px) {
+      .demo-builder { grid-template-columns: 1fr; }
+    }
     @media (max-width: 980px) {
-      nav {
-        position: relative !important;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        padding-top: 0.9rem;
-        padding-bottom: 0.9rem;
-        gap: 0;
-      }
-      nav > ul {
-        display: none !important;
-      }
-      .nav-hamburger {
-        display: flex;
-      }
+      nav > ul { display: none !important; }
+      .nav-hamburger { display: flex; }
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-visual { max-width: 640px; width: 100%; margin: 0 auto; }
       .hero-metric-row { grid-template-columns: 1fr 1fr; }
-      .problem-grid,
-      .feature-grid,
-      .how-grid,
-      .use-grid,
-      .pricing-grid,
-      .results-metrics,
-      .sales-impact,
-      .testimonial-grid,
-      .demo-grid,
-      .demo-builder,
-      .service-strip { grid-template-columns: 1fr; }
+      .problem-grid, .feature-grid, .how-grid, .use-grid, .pricing-grid, .prediction-grid, .demo-grid { grid-template-columns: 1fr; }
       .flowchart { grid-template-columns: 1fr; }
-      .flow-step:not(:last-child)::after {
-        top: auto;
-        right: 50%;
-        bottom: -0.7rem;
-        width: 0.5px;
-        height: 0.7rem;
-      }
+      .flow-step { min-height: 0; }
+      .flow-step:not(:last-child)::after { top: auto; right: 50%; bottom: -0.7rem; width: 0.5px; height: 0.7rem; }
+      .service-strip { grid-template-columns: 1fr 1fr; }
       .tagline-band { flex-direction: column; align-items: flex-start; }
       .band-label { text-align: left; }
+      .plan-fit { min-height: 0; }
     }
-
     @media (max-width: 760px) {
-      /* Force reveal elements to be visible on mobile */
-      .reveal,
-      .problems,
-      .solutions,
-      .how-it-works,
-      .use-cases,
-      .live-demo,
-      .keywords-section,
-      .pricing,
-      .results,
-      .seo-block,
-      .cta-final,
-      footer,
-      .hero,
-      .tagline-band {
-        opacity: 1 !important;
-        transform: none !important;
-        transition: none !important;
-      }
-      .reveal .problem-item,
-      .reveal .feature-card,
-      .reveal .how-card,
-      .reveal .use-card,
-      .reveal .demo-panel,
-      .reveal .price-card,
-      .reveal .result-metric,
-      .reveal .sales-card,
-      .reveal .testimonial,
-      .reveal .logo-pill,
-      .reveal.in-view .problem-item,
-      .reveal.in-view .feature-card,
-      .reveal.in-view .how-card,
-      .reveal.in-view .use-card,
-      .reveal.in-view .demo-panel,
-      .reveal.in-view .price-card {
-        opacity: 1 !important;
-        transform: none !important;
-        transition: none !important;
-      }
-
-      .site > nav,
-      .site > .hero,
-      .site > .tagline-band,
-      .site > .problems,
-      .site > .solutions,
-      .site > .how-it-works,
-      .site > .use-cases,
-      .site > .live-demo,
-      .site > .keywords-section,
-      .site > .pricing,
-      .site > .results,
-      .site > .seo-block,
-      .site > .cta-final,
-      .site > footer {
-        padding-left: 1rem;
-        padding-right: 1rem;
-      }
-      .hero { padding-top: 3rem; padding-bottom: 2.6rem; }
-      .problems,
-      .solutions,
-      .how-it-works,
-      .use-cases,
-      .live-demo,
-      .keywords-section,
-      .pricing,
-      .results,
-      .seo-block,
-      .cta-final { padding-top: 2.6rem; padding-bottom: 2.6rem; }
-      h1 { font-size: clamp(34px, 11vw, 50px); }
-      .lead-form { grid-template-columns: 1fr; }
+      .site > nav, .site > .hero, .site > .stack-band, .site > .tagline-band, .site > .problems, .site > .solutions,
+      .site > .how-it-works, .site > .use-cases, .site > .live-demo, .site > .keywords-section, .site > .pricing,
+      .site > .results, .site > .seo-block, .site > .cta-final, .site > footer { padding-left: 1rem; padding-right: 1rem; }
+      .hero { padding-top: 2.6rem; padding-bottom: 2.4rem; }
+      .problems, .solutions, .how-it-works, .use-cases, .live-demo, .keywords-section, .pricing, .results, .cta-final { padding-top: 3rem; padding-bottom: 3rem; }
+      .hero-metric { padding: 1.5rem 0.8rem; }
+      .hero-metric-value { font-size: 28px; }
+      .k-val { font-size: 24px; }
+      .float-chip.c1 { right: 0; } .float-chip.c2 { left: 0; }
       .demo-workspace-head { align-items: flex-start; flex-direction: column; }
       .demo-workspace-actions { justify-content: flex-start; }
-      .pipeline-topline { align-items: flex-start; }
       .cookie-banner.show { flex-direction: column; align-items: flex-start; }
       .skip-intro { right: 1rem; bottom: 1rem; }
       .aias-text { letter-spacing: 0.06em; }
-      .aias-glow { letter-spacing: 0.03em; }
+      .live-metrics { gap: 1rem; }
+      /* never leave content hidden on small screens */
+      html.js .reveal:not(.in-view) { opacity: 1; transform: none; }
+      html.js .reveal:not(.in-view) :is(.problem-item, .feature-card, .how-card, .use-card, .price-card, .prediction-card, .build-tag) { opacity: 1; }
     }
-
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation: none !important;
-        transition: none !important;
-      }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
       .cinematic-intro { display: none !important; }
-      .site { opacity: 1; transform: none; }
-      .problems,
-      .solutions,
-      .how-it-works,
-      .use-cases,
-      .live-demo,
-      .keywords-section,
-      .pricing,
-      .results,
-      .seo-block,
-      .cta-final,
-      footer,
-      .hero,
-      .tagline-band { opacity: 1; transform: none; }
+      .site { opacity: 1; }
+      html.js .reveal:not(.in-view) { opacity: 1; transform: none; }
+      html.js .reveal:not(.in-view) :is(.problem-item, .feature-card, .how-card, .use-card, .price-card, .prediction-card, .build-tag) { opacity: 1; }
+      .aias-letter, .aias-sub-word, .intro-mark { opacity: 1; }
+      .spark .line { stroke-dashoffset: 0; }
+      .marquee-track { flex-wrap: wrap; width: auto; justify-content: center; }
+      .marquee-track .dup { display: none; }
     }
   </style>
 </head>
 <body class="intro-lock">
-  <div class="cinematic-intro" id="cinematicIntro" aria-label="AIAS cinematic intro">
+
+  <!-- ───────── SVG sprite: logo + every icon used on the page ───────── -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="logoGold" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F3E5AB" />
+        <stop offset="50%" stop-color="#D4AF37" />
+        <stop offset="100%" stop-color="#AA7C11" />
+      </linearGradient>
+    </defs>
+    <symbol id="aias-logo" viewBox="0 0 100 100">
+      <polygon points="50,5 90,28 90,72 50,95 10,72 10,28" fill="#0C0C0C" stroke="url(#logoGold)" stroke-width="6" stroke-linejoin="round" />
+      <path d="M50 24 L74 74 H62 L50 50 L38 74 H26 Z" fill="url(#logoGold)" />
+      <rect x="42" y="61" width="16" height="4" fill="url(#logoGold)" />
+    </symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+    <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></symbol>
+    <symbol id="i-package" viewBox="0 0 24 24"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><line x1="8" y1="6" x2="8.01" y2="6"/><line x1="12" y1="6" x2="12.01" y2="6"/><line x1="16" y1="6" x2="16.01" y2="6"/><line x1="8" y1="10" x2="8.01" y2="10"/><line x1="12" y1="10" x2="12.01" y2="10"/><line x1="16" y1="10" x2="16.01" y2="10"/><line x1="8" y1="14" x2="8.01" y2="14"/><line x1="12" y1="14" x2="12.01" y2="14"/><line x1="16" y1="14" x2="16.01" y2="14"/></symbol>
+    <symbol id="i-rocket" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></symbol>
+    <symbol id="i-sprout" viewBox="0 0 24 24"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></symbol>
+    <symbol id="i-sync" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></symbol>
+    <symbol id="i-terminal" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></symbol>
+    <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></symbol>
+    <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></symbol>
+    <symbol id="i-trend" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></symbol>
+    <symbol id="i-dollar" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></symbol>
+  </svg>
+
+  <!-- ───────── Intro ───────── -->
+  <div class="cinematic-intro" id="cinematicIntro">
     <div class="aias-stage">
-        <div class="aias-text" aria-label="AIAS">
-        <span class="aias-letter gold-text" style="--i: 0;">A</span>
-        <span class="aias-letter black-text" style="--i: 1;">I</span>
-        <span class="aias-letter black-text" style="--i: 2;">A</span>
-        <span class="aias-letter gold-text" style="--i: 3;">S</span>
+      <svg class="intro-mark" viewBox="0 0 100 100" aria-hidden="true"><use href="#aias-logo"/></svg>
+      <div class="aias-text" aria-label="AIAS">
+        <span class="aias-letter gold-text" style="--i:0;">A</span>
+        <span class="aias-letter black-text" style="--i:1;">I</span>
+        <span class="aias-letter black-text" style="--i:2;">A</span>
+        <span class="aias-letter gold-text" style="--i:3;">S</span>
       </div>
       <div class="aias-glow" aria-label="we not just build we will maintain">
         <div class="aias-sub-line">
-          <span class="aias-sub-word gold-text" style="--i: 0;">we</span>
-          <span class="aias-sub-word gold-text" style="--i: 1;">not</span>
-          <span class="aias-sub-word gold-text" style="--i: 2;">just</span>
-          <span class="aias-sub-word gold-text" style="--i: 3;">build</span>
+          <span class="aias-sub-word gold-text" style="--i:0;">we</span>
+          <span class="aias-sub-word gold-text" style="--i:1;">not</span>
+          <span class="aias-sub-word gold-text" style="--i:2;">just</span>
+          <span class="aias-sub-word gold-text" style="--i:3;">build</span>
         </div>
         <div class="aias-sub-line">
-          <span class="aias-sub-word black-text" style="--i: 4;">we</span>
-          <span class="aias-sub-word black-text" style="--i: 5;">will</span>
-          <span class="aias-sub-word black-text" style="--i: 6;">maintain</span>
+          <span class="aias-sub-word black-text" style="--i:4;">we</span>
+          <span class="aias-sub-word black-text" style="--i:5;">will</span>
+          <span class="aias-sub-word black-text" style="--i:6;">maintain</span>
         </div>
       </div>
     </div>
@@ -1953,23 +685,11 @@
 
   <div class="site" id="siteRoot">
     <nav id="mainNav">
-      <div class="logo" style="display:flex;align-items:center;gap:10px;">
-        <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0px 2px 8px rgba(212, 175, 55, 0.3)); flex-shrink: 0;">
-          <defs>
-            <linearGradient id="logoGold" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#F3E5AB" />
-              <stop offset="50%" stop-color="#D4AF37" />
-              <stop offset="100%" stop-color="#AA7C11" />
-            </linearGradient>
-          </defs>
-          <polygon points="50,5 90,28 90,72 50,95 10,72 10,28" stroke="url(#logoGold)" stroke-width="7" fill="rgba(12, 12, 12, 0.95)" />
-          <path d="M50 22 L75 75 H61 L50 49 L39 75 H25 L50 22 Z" fill="url(#logoGold)" />
-          <path d="M43 60 H57" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" />
-        </svg>
-        <span>AIAS <span>Platform</span></span>
-      </div>
+      <a class="logo" href="#about" aria-label="AIAS Platform home">
+        <svg class="logo-mark" viewBox="0 0 100 100" aria-hidden="true"><use href="#aias-logo"/></svg>
+        <span class="logo-word">AIAS <em>Platform</em></span>
+      </a>
 
-      <!-- Desktop nav -->
       <ul>
         <li><a href="#features">Platform</a></li>
         <li><a href="#how-it-works">How It Works</a></li>
@@ -1977,21 +697,19 @@
         <li><a href="#pricing">Pricing</a></li>
         {% if logged_in %}
         <li style="position: relative; display: inline-block;">
-          <a href="#" id="navWelcomeBtn" class="nav-welcome" aria-expanded="false" style="text-decoration: none;">
+          <a href="#" id="navWelcomeBtn" class="nav-welcome" aria-expanded="false">
             <span>Welcome {{ user_name.split(' ')[0] }}</span>
-            <svg id="welcomeChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.2s ease; display: inline-block; vertical-align: middle;">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
+            <svg class="ico chev" id="welcomeChevron" aria-hidden="true"><use href="#i-chev"/></svg>
           </a>
           <div id="navWelcomeDropdown" class="welcome-dropdown">
-            <div style="font-size: 11px; color: var(--ds-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Account Email</div>
-            <div style="font-size: 13px; color: var(--ds-black); word-break: break-all; font-family: var(--sans);">{{ user_email }}</div>
-            <div style="border-top: 0.5px solid var(--ds-line); margin: 0.75rem 0;"></div>
-            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <div class="dd-label">Account Email</div>
+            <div class="dd-email">{{ user_email }}</div>
+            <div class="dd-sep"></div>
+            <div style="display:flex;flex-direction:column;gap:0.5rem;">
               {% if user_email == 'aiasprivateltd@gmail.com' or user_email == 'varshithkumar815@gmail.com' %}
               <a href="/admin" class="dropdown-link" style="color: var(--ds-black);">Admin Console</a>
               {% endif %}
-              <a href="/signout" class="dropdown-link" style="color: #ff4d4d;">Sign Out</a>
+              <a href="/signout" class="dropdown-link" style="color:#ff4d4d;">Sign Out</a>
             </div>
           </div>
         </li>
@@ -1999,81 +717,98 @@
         <li><a href="/signin" id="navPrimaryCta" class="nav-cta">Sign In</a></li>
         {% endif %}
         <li>
-          <button id="themeToggle" class="theme-icon-btn" aria-label="Toggle Theme">
-            <svg class="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: var(--display-moon, block); transition: all 0.3s ease;">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
-            <svg class="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: var(--display-sun, none); transition: all 0.3s ease;">
-              <circle cx="12" cy="12" r="5"></circle>
-              <line x1="12" y1="1" x2="12" y2="3"></line>
-              <line x1="12" y1="21" x2="12" y2="23"></line>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-              <line x1="1" y1="12" x2="3" y2="12"></line>
-              <line x1="21" y1="12" x2="23" y2="12"></line>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-            </svg>
+          <button id="themeToggle" class="theme-icon-btn" type="button" aria-label="Toggle theme">
+            <svg class="ico theme-icon-moon" aria-hidden="true"><use href="#i-moon"/></svg>
+            <svg class="ico theme-icon-sun" aria-hidden="true"><use href="#i-sun"/></svg>
           </button>
         </li>
       </ul>
 
-      <!-- Mobile hamburger -->
-      <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu" aria-expanded="false">
+      <button class="nav-hamburger" id="navHamburger" type="button" aria-label="Toggle menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
 
-      <!-- Mobile slide-down menu -->
       <div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile navigation">
-        <a href="#features" class="mobile-link">Platform</a>
-        <a href="#how-it-works" class="mobile-link">How It Works</a>
-        <a href="#use-cases" class="mobile-link">Use Cases</a>
-        <a href="#pricing" class="mobile-link">Pricing</a>
+        <a href="#features">Platform</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#use-cases">Use Cases</a>
+        <a href="#pricing">Pricing</a>
         <div class="mobile-theme-row">
           <span class="mobile-theme-label">Toggle Theme</span>
-          <button id="themeToggleMobile" class="theme-icon-btn" aria-label="Toggle Theme" style="margin-left:0;">
-            <svg class="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: var(--display-moon, block);">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
-            <svg class="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: var(--display-sun, none);">
-              <circle cx="12" cy="12" r="5"></circle>
-              <line x1="12" y1="1" x2="12" y2="3"></line>
-              <line x1="12" y1="21" x2="12" y2="23"></line>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-              <line x1="1" y1="12" x2="3" y2="12"></line>
-              <line x1="21" y1="12" x2="23" y2="12"></line>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-            </svg>
+          <button id="themeToggleMobile" class="theme-icon-btn" type="button" aria-label="Toggle theme" style="margin-left:0;">
+            <svg class="ico theme-icon-moon" aria-hidden="true"><use href="#i-moon"/></svg>
+            <svg class="ico theme-icon-sun" aria-hidden="true"><use href="#i-sun"/></svg>
           </button>
         </div>
         {% if logged_in %}
-        <span class="mobile-welcome">👤 {{ user_name.split(' ')[0] }}  ·  {{ user_email }}</span>
+        <span class="mobile-welcome">Welcome {{ user_name.split(' ')[0] }} &middot; {{ user_email }}</span>
         {% if user_email == 'aiasprivateltd@gmail.com' or user_email == 'varshithkumar815@gmail.com' %}
-        <a href="/admin" class="mobile-link">Admin Console</a>
+        <a href="/admin">Admin Console</a>
         {% endif %}
-        <a href="/signout" class="mobile-link mobile-signout">Sign Out</a>
+        <a href="/signout" class="mobile-signout">Sign Out</a>
         {% else %}
         <a href="/signin" class="mobile-signin">Sign In</a>
         {% endif %}
       </div>
     </nav>
 
+    <!-- ───────── Hero ───────── -->
     <section class="hero reveal" id="about">
-      <div class="hero-eyebrow">AI As A Solution for Business Automation</div>
-      <h1>Deploy AI agents to automate your business workflows in minutes.</h1>
-      <p class="hero-sub">AIAS (AI As A Solution) is an AI SaaS platform that connects your tools, deploys AI agents for business, and runs AI workflow automation from one control center so teams can move faster with less manual work.</p>
-      <p class="hero-use-case">Use case example: A support team auto-classifies incoming tickets, drafts replies, updates CRM records, and escalates priority issues in real time.</p>
-      <div class="hero-actions">
-        <button class="btn-primary" type="button" data-action="demo-gate" data-source="Hero See Demo" data-plan="Growth">See Demo</button>
-        <button class="btn-secondary" type="button" data-action="book-call" data-source="Hero Book Call">Book Call</button>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="hero-eyebrow">AI As A Solution for Business Automation</div>
+          <h1>Deploy AI agents to automate your business workflows in 72 hours.</h1>
+          <div class="hero-headline-line"></div>
+          <p class="hero-sub">AIAS (AI As A Solution) is an AI SaaS platform that connects your tools, deploys AI agents for business, and runs AI workflow automation from one control center so teams can move faster with less manual work.</p>
+          <p class="hero-use-case">Use case example: A support team auto-classifies incoming tickets, drafts replies, updates CRM records, and escalates priority issues in real time.</p>
+          <div class="hero-actions">
+            <button class="btn-primary" type="button" data-action="demo-gate" data-source="Hero See Demo" data-plan="Growth">See Demo</button>
+            <button class="btn-secondary" type="button" data-action="book-call" data-source="Hero Book Call">Book Call</button>
+          </div>
+        </div>
+
+        <!-- Live control-center preview -->
+        <div class="hero-visual" aria-label="AI Business Automation Control Center">
+          <img src="{{ url_for('serve_asset', filename='AI Business Automation Control Center.png') }}"
+               alt="AI Business Automation Control Center"
+               class="hero-img"
+               loading="eager"
+               onerror="this.onerror=null;this.src='/static/images/AI Business Automation Control Center.png';" />
+        </div>
       </div>
+
       <div class="hero-metric-row">
-        <div class="metric"><div class="metric-val">10x</div><div class="metric-label">Faster AI deployment</div></div>
-        <div class="metric"><div class="metric-val">60%</div><div class="metric-label">Lower manual workload</div></div>
-        <div class="metric"><div class="metric-val">99.95%</div><div class="metric-label">Platform uptime target</div></div>
-        <div class="metric"><div class="metric-val">72h</div><div class="metric-label">Average time to first automation</div></div>
+        <div class="hero-metric"><div class="hero-metric-value">10x</div><div class="hero-metric-label">Faster AI deployment</div></div>
+        <div class="hero-metric"><div class="hero-metric-value">60%</div><div class="hero-metric-label">Lower manual workload</div></div>
+        <div class="hero-metric"><div class="hero-metric-value">99.95%</div><div class="hero-metric-label">Platform uptime target</div></div>
+        <div class="hero-metric"><div class="hero-metric-value">72h</div><div class="hero-metric-label">Average time to first automation</div></div>
+      </div>
+    </section>
+
+    <!-- ───────── Integrations strip ───────── -->
+    <section class="stack-band" aria-label="What AIAS connects to">
+      <div class="stack-label">Connects to the tools your team already runs on</div>
+      <div class="marquee">
+        <div class="marquee-track">
+          <span class="stack-chip"><svg class="ico" aria-hidden="true"><use href="#i-users"/></svg>CRM</span>
+          <span class="stack-chip"><svg class="ico" aria-hidden="true"><use href="#i-db"/></svg>ERP &amp; Databases</span>
+          <span class="stack-chip"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg>Helpdesk</span>
+          <span class="stack-chip"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg>WhatsApp &amp; SMS</span>
+          <span class="stack-chip"><svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg>Email</span>
+          <span class="stack-chip"><svg class="ico" aria-hidden="true"><use href="#i-cal"/></svg>Calendars</span>
+          <span class="stack-chip"><svg class="ico" aria-hidden="true"><use href="#i-card"/></svg>Payments</span>
+          <span class="stack-chip"><svg class="ico" aria-hidden="true"><use href="#i-doc"/></svg>Docs &amp; Sheets</span>
+          <span class="stack-chip"><svg class="ico" aria-hidden="true"><use href="#i-link"/></svg>Webhooks &amp; REST APIs</span>
+          <span class="stack-chip dup" aria-hidden="true"><svg class="ico"><use href="#i-users"/></svg>CRM</span>
+          <span class="stack-chip dup" aria-hidden="true"><svg class="ico"><use href="#i-db"/></svg>ERP &amp; Databases</span>
+          <span class="stack-chip dup" aria-hidden="true"><svg class="ico"><use href="#i-chat"/></svg>Helpdesk</span>
+          <span class="stack-chip dup" aria-hidden="true"><svg class="ico"><use href="#i-phone"/></svg>WhatsApp &amp; SMS</span>
+          <span class="stack-chip dup" aria-hidden="true"><svg class="ico"><use href="#i-mail"/></svg>Email</span>
+          <span class="stack-chip dup" aria-hidden="true"><svg class="ico"><use href="#i-cal"/></svg>Calendars</span>
+          <span class="stack-chip dup" aria-hidden="true"><svg class="ico"><use href="#i-card"/></svg>Payments</span>
+          <span class="stack-chip dup" aria-hidden="true"><svg class="ico"><use href="#i-doc"/></svg>Docs &amp; Sheets</span>
+          <span class="stack-chip dup" aria-hidden="true"><svg class="ico"><use href="#i-link"/></svg>Webhooks &amp; REST APIs</span>
+        </div>
       </div>
     </section>
 
@@ -2082,55 +817,61 @@
       <div class="band-label">B2B AI SaaS<br>Product First Platform</div>
     </div>
 
+    <!-- ───────── Problems ───────── -->
     <section class="problems reveal" id="problems">
       <div class="section-tag">Problems We Solve</div>
       <h2 class="section-title">Why teams struggle to automate business workflows with AI</h2>
       <p class="section-copy">Most teams buy multiple tools, but still do repetitive work manually. AIAS solves the integration, deployment, and analytics gaps that slow down business automation.</p>
       <div class="problem-grid">
         <div class="problem-item">
-          <div class="problem-num">01</div>
+          <div class="problem-icon"><svg class="ico" aria-hidden="true"><use href="#i-layers"/></svg></div>
           <div class="problem-title">Your business tools are not integrated with AI automation software</div>
           <div class="problem-body">Data lives in separate apps, so your team cannot run AI workflow automation end-to-end across sales, support, and operations.</div>
         </div>
         <div class="problem-item">
-          <div class="problem-num">02</div>
+          <div class="problem-icon"><svg class="ico" aria-hidden="true"><use href="#i-cpu"/></svg></div>
           <div class="problem-title">AI agents for business are hard to deploy and maintain</div>
           <div class="problem-body">Generic models do not map to your process logic, approvals, and SLAs, so deployment stalls before teams see outcomes.</div>
         </div>
         <div class="problem-item">
-          <div class="problem-num">03</div>
+          <div class="problem-icon"><svg class="ico" aria-hidden="true"><use href="#i-shield"/></svg></div>
           <div class="problem-title">You cannot scale enterprise AI solutions safely</div>
           <div class="problem-body">Without governance, audit trails, and role controls, scaling AI across teams creates risk and inconsistent output quality.</div>
         </div>
         <div class="problem-item">
-          <div class="problem-num">04</div>
+          <div class="problem-icon"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg></div>
           <div class="problem-title">You lack real-time AI analytics on business impact</div>
           <div class="problem-body">Teams cannot measure automation value quickly, so leaders struggle to reduce operational cost with AI and prioritize the next rollout.</div>
         </div>
       </div>
     </section>
 
+    <!-- ───────── Features ───────── -->
     <section class="solutions reveal" id="features">
       <div class="section-tag">Product Features</div>
       <h2 class="section-title">Built as a scalable AI platform, not an agency service</h2>
       <p class="section-copy">Each feature is designed to solve a clear operations problem, deliver measurable value, and help teams deploy AI in business faster.</p>
       <div class="feature-grid">
         <article class="feature-card">
+          <div class="feature-icon"><svg class="ico" aria-hidden="true"><use href="#i-zap"/></svg></div>
           <h3 class="feature-name">AI Workflow Automation Engine</h3>
           <p class="feature-benefit">Automate repetitive business tasks using AI agents for business and rule-based orchestration across your existing tools.</p>
           <div class="feature-outcome">Outcome: Reduce manual operational work by up to 60%</div>
         </article>
         <article class="feature-card">
+          <div class="feature-icon"><svg class="ico" aria-hidden="true"><use href="#i-package"/></svg></div>
           <h3 class="feature-name">AI Platform to Build and Deploy Automation</h3>
           <p class="feature-benefit">Use templates, prompts, and integration connectors to launch AI tools for automation without custom project cycles.</p>
           <div class="feature-outcome">Outcome: Launch production automations in days, not months</div>
         </article>
         <article class="feature-card">
+          <div class="feature-icon"><svg class="ico" aria-hidden="true"><use href="#i-shield"/></svg></div>
           <h3 class="feature-name">Enterprise AI Solutions with Governance</h3>
           <p class="feature-benefit">Run secure multi-team workflows with approvals, role access, audit logs, and policy controls for regulated operations.</p>
           <div class="feature-outcome">Outcome: Scale AI across departments with consistent quality</div>
         </article>
         <article class="feature-card">
+          <div class="feature-icon"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg></div>
           <h3 class="feature-name">Real-Time AI Analytics and ROI Tracking</h3>
           <p class="feature-benefit">Track execution volume, time saved, and business outcomes in one dashboard with real-time AI analytics.</p>
           <div class="feature-outcome">Outcome: Prove ROI quickly and optimize automation strategy</div>
@@ -2138,77 +879,82 @@
       </div>
     </section>
 
-    <section class="solutions reveal" id="founder-engine" style="background: linear-gradient(180deg, var(--ds-soft) 0%, rgba(212,175,55,0.05) 50%, var(--ds-soft) 100%); border-bottom: 0.5px solid var(--ds-line); padding-top: 3.5rem; padding-bottom: 3.5rem;">
-      <div class="section-tag" style="background: var(--ds-gold-deep); color: #fff; border: none; padding: 4px 10px; font-weight: 600;">AIAS 2.0 FOR FOUNDERS</div>
+    <section class="solutions founder reveal" id="founder-engine" style="padding-top:3.5rem;padding-bottom:3.5rem;">
+      <div class="section-tag">AIAS 2.0 for Founders</div>
       <h2 class="section-title">The Massive Leap from Operations to Product Delivery</h2>
       <p class="section-copy">Startup founders need proprietary technology assets, not vendor lock-in. AIAS 2.0 compiles native frontends, automates compliance, and exports standard, clean code that you can host anywhere or show to VC investors.</p>
-      
       <div class="feature-grid">
-        <article class="feature-card" style="position: relative; overflow: hidden; border-left: 3px solid var(--ds-gold-deep);">
+        <article class="feature-card">
+          <div class="feature-icon"><svg class="ico" aria-hidden="true"><use href="#i-download"/></svg></div>
           <h3 class="feature-name">1. True Code Exportability (Zero Lock-In)</h3>
           <p class="feature-benefit">Outgrown the platform? Click "Eject" to download your workflows compiled as a standardized, beautifully clean Python or Node.js backend with Docker container configurations. Completely independent, ready to deploy to AWS or Google Cloud.</p>
-          <div class="feature-outcome" style="background: rgba(212,175,55,0.1); border-color: var(--ds-gold-deep); color: var(--ds-gold-deep);">100% OWNERSHIP &middot; NO LOCK-IN</div>
+          <div class="feature-outcome">100% Ownership &middot; No Lock-In</div>
         </article>
-
-        <article class="feature-card" style="position: relative; overflow: hidden; border-left: 3px solid var(--ds-gold-deep);">
+        <article class="feature-card">
+          <div class="feature-icon"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg></div>
           <h3 class="feature-name">2. Native Frontend Compilation Engine</h3>
           <p class="feature-benefit">We don't just mock apps—our engine automatically compiles production-ready mobile code frameworks in React Native or Flutter. Access smartphone hardware natively, including background GPS tracking, native camera processing, and encrypted local storage.</p>
-          <div class="feature-outcome" style="background: rgba(212,175,55,0.1); border-color: var(--ds-gold-deep); color: var(--ds-gold-deep);">FLUTTER &amp; REACT NATIVE &middot; NATIVE SDK</div>
+          <div class="feature-outcome">Flutter &amp; React Native &middot; Native SDK</div>
         </article>
-
-        <article class="feature-card" style="position: relative; overflow: hidden; border-left: 3px solid var(--ds-gold-deep);">
+        <article class="feature-card">
+          <div class="feature-icon"><svg class="ico" aria-hidden="true"><use href="#i-sync"/></svg></div>
           <h3 class="feature-name">3. App Store Compliance &amp; CI/CD Pipelines</h3>
           <p class="feature-benefit">Skip the manual submission headache. AIAS auto-generates your App Store privacy policies, runs data tracking compliance checks, orchestrates TestFlight &amp; Google Play Console beta builds, and deploys storefront updates automatically.</p>
-          <div class="feature-outcome" style="background: rgba(212,175,55,0.1); border-color: var(--ds-gold-deep); color: var(--ds-gold-deep);">AUTOMATED COMPLIANCE &middot; CI/CD PIPELINE</div>
+          <div class="feature-outcome">Automated Compliance &middot; CI/CD Pipeline</div>
         </article>
-
-        <article class="feature-card" style="position: relative; overflow: hidden; border-left: 3px solid var(--ds-gold-deep);">
+        <article class="feature-card">
+          <div class="feature-icon"><svg class="ico" aria-hidden="true"><use href="#i-terminal"/></svg></div>
           <h3 class="feature-name">4. Secure Custom Code Sandbox</h3>
           <p class="feature-benefit">Need custom logic for deep-tech sectors? Inject raw Python, Go, or C++ scripts directly into your automation pipelines. Process complex mathematics, real-time spatial databases, telemetry streams, and hardware telemetry without template restrictions.</p>
-          <div class="feature-outcome" style="background: rgba(212,175,55,0.1); border-color: var(--ds-gold-deep); color: var(--ds-gold-deep);">SECURE CODE SANDBOX &middot; RAW TELEMETRY &amp; GIS</div>
+          <div class="feature-outcome">Secure Code Sandbox &middot; Raw Telemetry &amp; GIS</div>
         </article>
       </div>
     </section>
 
+    <!-- ───────── How it works ───────── -->
     <section class="how-it-works reveal" id="how-it-works">
       <div class="section-tag">How It Works</div>
       <h2 class="section-title">Three steps to automate business workflows</h2>
       <p class="section-copy">AIAS simplifies enterprise deployment so teams can move from setup to outcomes quickly.</p>
       <div class="how-grid">
         <article class="how-card">
-          <div class="how-step">Step 1</div>
+          <div class="how-step">01</div>
           <h3 class="how-title">Connect your data</h3>
           <p class="how-body">Connect CRM, ERP, support, and internal systems so your AI automation software can run with context and clean inputs.</p>
         </article>
         <article class="how-card">
-          <div class="how-step">Step 2</div>
+          <div class="how-step">02</div>
           <h3 class="how-title">Deploy AI agents</h3>
           <p class="how-body">Choose workflow templates, set decision rules, and deploy AI agents for business by team, function, or process stage.</p>
         </article>
         <article class="how-card">
-          <div class="how-step">Step 3</div>
+          <div class="how-step">03</div>
           <h3 class="how-title">Automate workflows</h3>
           <p class="how-body">Run automations continuously, monitor with real-time AI analytics, and improve outputs with built-in feedback loops.</p>
         </article>
       </div>
     </section>
 
+    <!-- ───────── Use cases ───────── -->
     <section class="use-cases reveal" id="use-cases">
       <div class="section-tag">Use Cases</div>
       <h2 class="section-title">AI for startups, enterprises, and agriculture teams</h2>
       <p class="section-copy">Every use case is structured around a business bottleneck and a measurable automation outcome.</p>
       <div class="use-grid">
         <article class="use-card">
+          <div class="use-icon"><svg class="ico" aria-hidden="true"><use href="#i-rocket"/></svg></div>
           <h3 class="use-title">AI for startups</h3>
           <p class="use-body">Automate lead qualification, onboarding tasks, and support triage so lean teams can scale without hiring too early.</p>
           <div class="use-result">Result: Faster go-to-market with stronger AI productivity tools</div>
         </article>
         <article class="use-card">
+          <div class="use-icon"><svg class="ico" aria-hidden="true"><use href="#i-building"/></svg></div>
           <h3 class="use-title">AI for enterprises</h3>
           <p class="use-body">Standardize operations across departments with enterprise AI solutions, approvals, and compliance visibility.</p>
           <div class="use-result">Result: Consistent execution and lower cross-team process friction</div>
         </article>
         <article class="use-card">
+          <div class="use-icon"><svg class="ico" aria-hidden="true"><use href="#i-sprout"/></svg></div>
           <h3 class="use-title">AI for agriculture</h3>
           <p class="use-body">Automate crop planning workflows, alert routing, and field reporting with AI agents connected to operational data streams.</p>
           <div class="use-result">Result: Better planning speed and real-time decision support</div>
@@ -2216,48 +962,52 @@
       </div>
     </section>
 
+    <!-- ───────── Live demo ───────── -->
     <section class="live-demo reveal" id="live-demo">
       <div class="section-tag">Live Demo / Product Preview</div>
       <h2 class="section-title">See AIAS run automation in real time</h2>
       <p class="section-copy">Preview how the platform executes AI workflow automation from event trigger to business action and reporting.</p>
       <div class="demo-shell">
         <div class="demo-toolbar">
-          <div class="demo-title">AIAS Workflow Preview</div>
-          <div class="demo-status">Status: Live simulation mode</div>
-        </div>
-        <div class="demo-grid">
-          <div class="demo-panel">
-            <h4>Automation Pipeline</h4>
-            <p>Incoming request -> AI intent detection -> policy check -> business action -> analytics update.</p>
-            <ul class="demo-list">
-              <li>Lead form captured and enriched with company data</li>
-              <li>AI agent qualifies lead and assigns priority</li>
-              <li>Task synced to CRM and sales queue automatically</li>
-            </ul>
+          <div class="demo-toolbar-left">
+            <span class="demo-title">workflow: support-triage</span>
+            <span class="demo-status" id="demoStatus">Idle</span>
           </div>
-          <div class="demo-panel">
-            <h4>Business Impact Snapshot</h4>
-            <p>Estimated impact with active AI tools for automation:</p>
-            <ul class="demo-list">
-              <li>42% faster response cycle</li>
-              <li>31% lower manual ticket handling</li>
-              <li>18% higher qualified pipeline throughput</li>
-            </ul>
+          <div class="demo-toolbar-actions">
+            <button class="demo-btn" type="button" data-action="run-demo" data-source="Live Demo Run" id="runDemoBtn">Run Demo</button>
+            <button class="demo-btn" type="button" data-action="view-code" data-source="Live Demo View Code" id="viewCodeBtn">View Code</button>
           </div>
         </div>
-        <div class="demo-actions">
-          <button class="btn-primary" type="button" data-action="demo-gate" data-source="Live Demo Launch">See Demo</button>
-          <button class="btn-secondary" type="button" data-action="book-call" data-source="Live Demo Book Call">Book Call</button>
+        <pre class="demo-log" id="demoLog" aria-live="polite" tabindex="0"></pre>
+        <div class="live-metrics">
+          <div class="live-metric">
+            <div class="live-metric-value">2.3s</div>
+            <div class="live-metric-label">Avg Execution Time</div>
+          </div>
+          <div class="live-metric">
+            <div class="live-metric-value">99.9%</div>
+            <div class="live-metric-label">Success Rate</div>
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- ───────── Keywords ───────── -->
     <section class="keywords-section reveal" id="seo-keywords">
-      <div class="section-tag">SEO Content Block</div>
+      <div class="section-tag">Why AIAS</div>
       <h2 class="section-title">Why teams choose AIAS for B2B automation</h2>
       <p class="seo-keyword-text">AIAS is an AI SaaS platform and AI automation software built for companies that need reliable execution, not experiments. Our B2B AI SaaS product helps teams deploy AI in business with AI agents for business, AI workflow automation, and enterprise AI solutions from one scalable AI platform. Instead of disconnected scripts, you get structured AI tools for automation that reduce manual effort and improve consistency. Teams use AIAS to reduce operational cost with AI, automate business workflows, and track performance with real-time AI analytics. The platform is designed as AI for startups and enterprises, with practical AI productivity tools and governance controls that support day-to-day execution at scale.</p>
+      <div class="seo-keywords">
+        <span class="seo-keyword">AI workflow automation</span>
+        <span class="seo-keyword">Enterprise AI solutions</span>
+        <span class="seo-keyword">Business process automation</span>
+        <span class="seo-keyword">AI agents for business</span>
+        <span class="seo-keyword">ROI tracking</span>
+        <span class="seo-keyword">Scalable AI platform</span>
+      </div>
     </section>
 
+    <!-- ───────── Pricing ───────── -->
     <section class="pricing reveal" id="pricing">
       <div class="section-tag">Pricing</div>
       <h2 class="section-title">Simple plans for every growth stage</h2>
@@ -2306,29 +1056,28 @@
       </div>
     </section>
 
+    <!-- ───────── Growth predictions ───────── -->
     <section class="results reveal" id="growth-predictions">
       <div class="section-tag">Growth Predictions</div>
       <h2 class="section-title">What happens when you build with AIAS</h2>
       <p class="section-copy">We don't just build products — we accelerate your entire business trajectory. Here's the projected impact when you partner with AIAS for your next project.</p>
 
-      <!-- Timeline Predictions -->
       <div class="prediction-grid">
-
         <article class="prediction-card">
-          <div class="pred-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <div class="pred-icon"><svg class="ico" aria-hidden="true"><use href="#i-zap"/></svg></div>
           <div class="pred-header">
             <h4>Time to Market</h4>
-            <span class="pred-stat down">↓ 70% Faster</span>
+            <span class="pred-stat">&darr; 70% Faster</span>
           </div>
           <div class="pred-visual">
             <div class="pred-compare">
               <div class="pred-bar-wrap">
                 <span class="pred-label">Traditional Agency</span>
-                <div class="pred-bar-track"><div class="pred-bar old" style="width: 100%;">6–12 months</div></div>
+                <div class="pred-bar-track"><div class="pred-bar old" style="width:100%;">6–12 months</div></div>
               </div>
               <div class="pred-bar-wrap">
                 <span class="pred-label">With AIAS</span>
-                <div class="pred-bar-track"><div class="pred-bar new" style="width: 30%;">2–4 weeks</div></div>
+                <div class="pred-bar-track"><div class="pred-bar new" style="width:30%;">2–4 weeks</div></div>
               </div>
             </div>
           </div>
@@ -2336,20 +1085,20 @@
         </article>
 
         <article class="prediction-card">
-          <div class="pred-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <div class="pred-icon"><svg class="ico" aria-hidden="true"><use href="#i-dollar"/></svg></div>
           <div class="pred-header">
             <h4>Development Cost</h4>
-            <span class="pred-stat down">↓ 60% Savings</span>
+            <span class="pred-stat">&darr; 60% Savings</span>
           </div>
           <div class="pred-visual">
             <div class="pred-compare">
               <div class="pred-bar-wrap">
                 <span class="pred-label">Hiring a Dev Team</span>
-                <div class="pred-bar-track"><div class="pred-bar old" style="width: 100%;">₹15L – ₹50L+</div></div>
+                <div class="pred-bar-track"><div class="pred-bar old" style="width:100%;">₹15L – ₹50L+</div></div>
               </div>
               <div class="pred-bar-wrap">
                 <span class="pred-label">With AIAS</span>
-                <div class="pred-bar-track"><div class="pred-bar new" style="width: 35%;">₹2L – ₹8L</div></div>
+                <div class="pred-bar-track"><div class="pred-bar new" style="width:35%;">₹2L – ₹8L</div></div>
               </div>
             </div>
           </div>
@@ -2357,54 +1106,40 @@
         </article>
 
         <article class="prediction-card">
-          <div class="pred-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+          <div class="pred-icon"><svg class="ico" aria-hidden="true"><use href="#i-trend"/></svg></div>
           <div class="pred-header">
             <h4>Revenue Growth (Year 1)</h4>
-            <span class="pred-stat up">↑ 3–5x ROI</span>
+            <span class="pred-stat">&uarr; 3–5x ROI</span>
           </div>
           <div class="pred-visual">
             <div class="pred-timeline">
-              <div class="tl-step">
-                <div class="tl-month">Month 1</div>
-                <div class="tl-event">Product goes live. First users onboard.</div>
-              </div>
-              <div class="tl-step">
-                <div class="tl-month">Month 3</div>
-                <div class="tl-event">Revenue starts. Automation handles ops.</div>
-              </div>
-              <div class="tl-step">
-                <div class="tl-month">Month 6</div>
-                <div class="tl-event">Break even. Scaling customer acquisition.</div>
-              </div>
-              <div class="tl-step active">
-                <div class="tl-month">Month 12</div>
-                <div class="tl-event">3–5x return on your initial investment.</div>
-              </div>
+              <div class="tl-step"><div class="tl-month">Month 1</div><div class="tl-event">Product goes live. First users onboard.</div></div>
+              <div class="tl-step"><div class="tl-month">Month 3</div><div class="tl-event">Revenue starts. Automation handles ops.</div></div>
+              <div class="tl-step"><div class="tl-month">Month 6</div><div class="tl-event">Break even. Scaling customer acquisition.</div></div>
+              <div class="tl-step active"><div class="tl-month">Month 12</div><div class="tl-event">3–5x return on your initial investment.</div></div>
             </div>
           </div>
           <p class="pred-detail">Businesses that launch faster earn faster. AIAS-built products start generating revenue in month one — not month six.</p>
         </article>
-
       </div>
+      <p class="results-disclaimer">Projections are illustrative estimates based on typical project scopes; actual results vary by business and market.</p>
 
-      <!-- What You Can Build -->
       <div class="build-showcase">
         <div class="build-label">What clients build with AIAS</div>
         <div class="build-tags">
-          <span class="build-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Business Websites</span>
-          <span class="build-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> Mobile Apps</span>
-          <span class="build-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg> AI Automations</span>
-          <span class="build-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> E-commerce Platforms</span>
-          <span class="build-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> SaaS Dashboards</span>
-          <span class="build-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> API Integrations</span>
-          <span class="build-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> AI Chatbots</span>
-          <span class="build-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> CRM Systems</span>
-          <span class="build-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Invoice &amp; Billing Tools</span>
-          <span class="build-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg> Healthcare Portals</span>
+          <span class="build-tag"><svg class="ico" aria-hidden="true"><use href="#i-globe"/></svg>Business Websites</span>
+          <span class="build-tag"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg>Mobile Apps</span>
+          <span class="build-tag"><svg class="ico" aria-hidden="true"><use href="#i-cpu"/></svg>AI Automations</span>
+          <span class="build-tag"><svg class="ico" aria-hidden="true"><use href="#i-cart"/></svg>E-commerce Platforms</span>
+          <span class="build-tag"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg>SaaS Dashboards</span>
+          <span class="build-tag"><svg class="ico" aria-hidden="true"><use href="#i-link"/></svg>API Integrations</span>
+          <span class="build-tag"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg>AI Chatbots</span>
+          <span class="build-tag"><svg class="ico" aria-hidden="true"><use href="#i-users"/></svg>CRM Systems</span>
+          <span class="build-tag"><svg class="ico" aria-hidden="true"><use href="#i-doc"/></svg>Invoice &amp; Billing Tools</span>
+          <span class="build-tag"><svg class="ico" aria-hidden="true"><use href="#i-pulse"/></svg>Healthcare Portals</span>
         </div>
       </div>
 
-      <!-- Bottom CTA -->
       <div class="pred-cta">
         <p>Ready to see your business growth projections?</p>
         <button class="btn-primary" type="button" data-action="book-call" data-source="Growth Predictions CTA">Get Your Growth Plan</button>
@@ -2421,25 +1156,29 @@
       <h2>Start Automating Your Business with AI Today</h2>
       <p>Launch faster with a scalable AI platform built for measurable execution. Try the product preview or book a call with our team to plan your rollout.</p>
       <div class="cta-row">
-        <button class="btn-primary" type="button" data-action="demo-gate" data-source="Final CTA See Demo" data-plan="Consultation">See Demo</button>
-        <button class="btn-secondary" type="button" data-action="book-call" data-source="Final CTA Book Call">Book Call</button>
+        <button class="cta-btn" type="button" data-action="demo-gate" data-source="Final CTA See Demo" data-plan="Consultation">See Demo</button>
+        <button class="cta-btn" type="button" data-action="book-call" data-source="Final CTA Book Call">Book Call</button>
       </div>
     </section>
 
     <footer class="reveal">
       <div class="footer-copy">Copyright 2026 AIAS. All rights reserved.</div>
       <div class="footer-links">
-        <a data-action="policy" data-policy="privacy">Privacy</a>
-        <a data-action="policy" data-policy="terms">Terms</a>
-        <a data-action="policy" data-policy="contact" style="cursor: pointer;">Contact</a>
+        <a href="#" data-action="policy" data-policy="privacy">Privacy</a>
+        <a href="#" data-action="policy" data-policy="terms">Terms</a>
+        <a href="#" data-action="policy" data-policy="contact">Contact</a>
         <a href="https://www.linkedin.com/in/varshith-kumar-anand-7479b42a6/" target="_blank" rel="noopener noreferrer" data-track="LinkedIn Click">LinkedIn</a>
       </div>
     </footer>
   </div>
 
+  <!-- ───────── Demo workspace ───────── -->
   <section class="demo-workspace" id="demoWorkspace" aria-hidden="true">
     <div class="demo-workspace-head">
-      <div class="demo-workspace-brand">AIAS <span>Demo</span></div>
+      <a class="logo" href="#" data-action="back-home" aria-label="Back to website">
+        <svg class="logo-mark" viewBox="0 0 100 100" aria-hidden="true"><use href="#aias-logo"/></svg>
+        <span class="logo-word">AIAS <em>Demo</em></span>
+      </a>
       <div class="demo-workspace-actions">
         <button class="btn-secondary" type="button" data-action="back-home">Back to Website</button>
         <button class="btn-primary" type="button" data-action="book-call" data-source="Demo Workspace Book Call">Book Call</button>
@@ -2463,7 +1202,7 @@
         <section class="pipeline-preview" id="pipelinePreview" aria-live="polite">
           <div class="pipeline-topline">
             <div>
-              <div class="section-tag" id="pipelineIndustry">Retail & E-commerce</div>
+              <div class="section-tag" id="pipelineIndustry">Retail &amp; E-commerce</div>
               <h3 id="pipelineTitle">Customer support and order updates</h3>
             </div>
             <div class="pipeline-outcome" id="pipelineOutcome">AIAS handles customer messages, checks order context, drafts the answer, updates the helpdesk, and sends performance data to the dashboard.</div>
@@ -2485,58 +1224,42 @@
   </div>
 
   <div class="policy-modal" id="policyModal" aria-hidden="true">
-    <div class="modal-card">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="policyTitle">
       <div class="modal-head">
         <h3 class="modal-title" id="policyTitle">Policy</h3>
-        <button class="modal-close" type="button" data-close="policy" style="display:flex; align-items:center; justify-content:center; padding:0;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
+        <button class="modal-close" type="button" data-close="policy" aria-label="Close"><svg class="ico" aria-hidden="true"><use href="#i-close"/></svg></button>
       </div>
-      <p class="modal-sub" id="policyBody"></p>
+      <div class="modal-sub" id="policyBody"></div>
     </div>
   </div>
 
   {% if logged_in %}
   <div class="account-modal" id="accountModal" aria-hidden="true">
-    <div class="modal-card">
+    <div class="modal-card" role="dialog" aria-modal="true">
       <div class="modal-head">
         <h3 class="modal-title">Your AIAS Account</h3>
-        <button class="modal-close" type="button" data-close="account" style="display:flex; align-items:center; justify-content:center; padding:0;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
+        <button class="modal-close" type="button" data-close="account" aria-label="Close"><svg class="ico" aria-hidden="true"><use href="#i-close"/></svg></button>
       </div>
       <p class="modal-sub">You are signed in. Continue browsing or sign out.</p>
       <div class="account-details">
-        <div class="account-row">
-          <div class="account-label">Name</div>
-          <div class="account-value">{{ user_name }}</div>
-        </div>
-        <div class="account-row">
-          <div class="account-label">Email</div>
-          <div class="account-value">{{ user_email }}</div>
-        </div>
+        <div class="account-row"><div class="account-label">Name</div><div class="account-value">{{ user_name }}</div></div>
+        <div class="account-row"><div class="account-label">Email</div><div class="account-value">{{ user_email }}</div></div>
       </div>
       <div class="account-actions">
         <button class="btn-secondary" type="button" data-close="account">Continue</button>
-        <a href="/signout" class="btn-primary" style="text-decoration:none;text-align:center;">Sign Out</a>
+        <a href="/signout" class="btn-primary">Sign Out</a>
       </div>
     </div>
   </div>
   {% endif %}
 
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status"></div>
 
   <!-- AIAS Runtime Config (used by chatbot.js) -->
   <script>
     window.AIAS_CONFIG = {
       isLoggedIn: {{ 'true' if logged_in else 'false' }},
-      userEmail: "{{ user_email if user_email else '' }}"
+      userEmail: {{ (user_email or '')|tojson }}
     };
   </script>
 
@@ -2559,17 +1282,16 @@
       const pipelineOutcome = document.getElementById("pipelineOutcome");
       const flowchart = document.getElementById("flowchart");
       const serviceStrip = document.getElementById("serviceStrip");
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      const BOOK_CALL_URL = "https://cal.com";
-      // openBookCall is handled by chatbot.js (capture phase) — stub to avoid ReferenceError
-      function openBookCall(source) { /* handled by chatbot widget */ }
+      const BOOK_CALL_URL = "https://cal.com"; // TODO: replace with your real booking link
       const IS_LOGGED_IN = {{ 'true' if logged_in else 'false' }};
 
       const policyText = {
         privacy: `
           <div style="font-family: var(--sans); color: var(--ds-black); line-height: 1.6; text-align: left;">
-            <p style="margin-bottom: 1rem; font-weight: 600; color: var(--ds-gold-deep); font-size: 15px; display: flex; align-items: center; gap: 8px;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ds-black)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <p style="margin-bottom: 1rem; font-weight: 600; color: var(--ds-gold-text); font-size: 15px; display: flex; align-items: center; gap: 8px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               <span>AIAS Founder &amp; Enterprise Data Protection Safeguards</span>
             </p>
             <p style="margin-bottom: 0.8rem; font-size: 13px;">We understand that your business data and proprietary workflows are your most valuable intellectual assets. AIAS enforces military-grade protocols to guarantee complete security and safety:</p>
@@ -2585,8 +1307,8 @@
         `,
         terms: `
           <div style="font-family: var(--sans); color: var(--ds-black); line-height: 1.6; text-align: left;">
-            <p style="margin-bottom: 1rem; font-weight: 600; color: var(--ds-gold-deep); font-size: 15px; display: flex; align-items: center; gap: 8px;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ds-black)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <p style="margin-bottom: 1rem; font-weight: 600; color: var(--ds-gold-text); font-size: 15px; display: flex; align-items: center; gap: 8px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
               <span>Terms of Service &amp; Intellectual Property Sovereignty</span>
             </p>
             <p style="margin-bottom: 0.8rem; font-size: 13px;">AIAS 2.0 is built from the ground up to empower startup founders. Our Terms of Service explicitly protect your ownership rights:</p>
@@ -2601,19 +1323,19 @@
         `,
         contact: `
           <div style="font-family: var(--sans); color: var(--ds-black); line-height: 1.6; text-align: left;">
-            <p style="margin-bottom: 1.25rem; font-weight: 600; color: var(--ds-gold-deep); font-size: 15px; display: flex; align-items: center; gap: 8px;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ds-black)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <p style="margin-bottom: 1.25rem; font-weight: 600; color: var(--ds-gold-text); font-size: 15px; display: flex; align-items: center; gap: 8px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
               <span>Contact AIAS Support &amp; Sales</span>
             </p>
             <p style="margin-bottom: 1.5rem; font-size: 13.5px;">If you have any questions, concerns, or inquiries regarding our platform, custom enterprise integrations, or scheduling, please reach out to us directly:</p>
             <div style="background-color: var(--ds-soft); border: 0.5px solid var(--ds-line); border-radius: 6px; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem;">
               <div style="display: flex; align-items: center; gap: 10px;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ds-black)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                <span style="font-size: 14px; font-weight: 500; font-family: var(--sans);"><a href="mailto:aiasprivateltd@gmail.com" style="color: var(--ds-black); text-decoration: none;">aiasprivateltd@gmail.com</a></span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <span style="font-size: 14px; font-weight: 500;"><a href="mailto:aiasprivateltd@gmail.com" style="color: var(--ds-black); text-decoration: none;">aiasprivateltd@gmail.com</a></span>
               </div>
               <div style="display: flex; align-items: center; gap: 10px;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ds-black)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                <span style="font-size: 14px; font-weight: 500; font-family: var(--sans); color: var(--ds-black);">+91 7022756962</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <span style="font-size: 14px; font-weight: 500;">+91 7022756962</span>
               </div>
             </div>
             <p style="font-size: 11.5px; color: var(--ds-muted);">Our team is available 24/7 and will respond to your email or WhatsApp message within 24 hours.</p>
@@ -2809,52 +1531,43 @@
         }
       ];
 
+      /* ───────── Helpers ───────── */
+      let toastTimer = null;
       function showToast(message) {
         toast.textContent = message;
         toast.classList.add("show");
-        setTimeout(() => toast.classList.remove("show"), 2500);
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove("show"), 2500);
       }
 
       function setCookie(name, value, days) {
         const maxAge = days * 24 * 60 * 60;
         document.cookie = name + "=" + encodeURIComponent(value) + "; path=/; max-age=" + maxAge + "; SameSite=Lax";
       }
-
       function getCookie(name) {
         const pairs = document.cookie.split(";").map(v => v.trim());
         for (const pair of pairs) {
-          if (pair.startsWith(name + "=")) {
-            return decodeURIComponent(pair.split("=").slice(1).join("="));
-          }
+          if (pair.startsWith(name + "=")) return decodeURIComponent(pair.split("=").slice(1).join("="));
         }
         return "";
       }
-
-      function getConsent() {
-        return getCookie(consentCookie) || localStorage.getItem(consentCookie) || "";
-      }
-
+      function safeLS(fn, fallback) { try { return fn(); } catch (e) { return fallback; } }
+      function getConsent() { return getCookie(consentCookie) || safeLS(() => localStorage.getItem(consentCookie), "") || ""; }
       function setConsent(value) {
         setCookie(consentCookie, value, 180);
-        localStorage.setItem(consentCookie, value);
+        safeLS(() => localStorage.setItem(consentCookie, value));
         cookieBanner.classList.remove("show");
         showToast("Cookie preference saved: " + value);
       }
-
       function saveEvent(type, source, payload) {
         if (getConsent() !== "accepted") return;
-        const events = JSON.parse(localStorage.getItem(interactionStorageKey) || "[]");
-        events.push({
-          type: type,
-          source: source,
-          payload: payload || {},
-          timestamp: new Date().toISOString()
-        });
-        localStorage.setItem(interactionStorageKey, JSON.stringify(events.slice(-150)));
+        const events = safeLS(() => JSON.parse(localStorage.getItem(interactionStorageKey) || "[]"), []);
+        events.push({ type: type, source: source, payload: payload || {}, timestamp: new Date().toISOString() });
+        safeLS(() => localStorage.setItem(interactionStorageKey, JSON.stringify(events.slice(-150))));
         setCookie("aias_last_interaction", type + ":" + source, 30);
       }
 
-      // ── Account Modal ──
+      /* ───────── Modals ───────── */
       function openAccountModal(source) {
         if (!accountModal) return;
         document.body.classList.add("modal-open");
@@ -2862,20 +1575,14 @@
         accountModal.setAttribute("aria-hidden", "false");
         saveEvent("open_account", source || "unknown", {});
       }
-
       function closeAccountModal() {
         if (!accountModal) return;
         document.body.classList.remove("modal-open");
         accountModal.classList.remove("show");
         accountModal.setAttribute("aria-hidden", "true");
       }
-
       function openPolicy(policyKey) {
-        const titleMap = {
-          privacy: "Privacy Policy",
-          terms: "Terms of Service",
-          contact: "Contact Details"
-        };
+        const titleMap = { privacy: "Privacy Policy", terms: "Terms of Service", contact: "Contact Details" };
         policyTitle.textContent = titleMap[policyKey] || "Policy";
         policyBody.innerHTML = policyText[policyKey] || "Policy content not available.";
         document.body.classList.add("modal-open");
@@ -2883,14 +1590,13 @@
         policyModal.setAttribute("aria-hidden", "false");
         saveEvent("open_policy", policyKey, {});
       }
-
       function closePolicy() {
         document.body.classList.remove("modal-open");
         policyModal.classList.remove("show");
         policyModal.setAttribute("aria-hidden", "true");
       }
 
-      // ── Demo Workspace ──
+      /* ───────── Demo workspace ───────── */
       function renderBusinessList() {
         businessList.innerHTML = demoBusinesses.map((business, index) => `
           <button class="business-card${index === activeBusinessIndex ? " active" : ""}" type="button" data-business-index="${index}">
@@ -2899,7 +1605,6 @@
           </button>
         `).join("");
       }
-
       function renderTaskList() {
         const business = demoBusinesses[activeBusinessIndex];
         taskList.innerHTML = business.tasks.map((task, index) => `
@@ -2909,7 +1614,6 @@
           </button>
         `).join("");
       }
-
       function renderPipeline() {
         const business = demoBusinesses[activeBusinessIndex];
         const task = business.tasks[activeTaskIndex];
@@ -2925,12 +1629,7 @@
         `).join("");
         serviceStrip.innerHTML = task.services.map(service => `<div class="service-pill">${service}</div>`).join("");
       }
-
-      function renderDemoWorkspace() {
-        renderBusinessList();
-        renderTaskList();
-        renderPipeline();
-      }
+      function renderDemoWorkspace() { renderBusinessList(); renderTaskList(); renderPipeline(); }
 
       function openDemoWorkspace(source) {
         if (!IS_LOGGED_IN) {
@@ -2939,17 +1638,17 @@
           return;
         }
         renderDemoWorkspace();
+        siteRoot.classList.add("is-hidden");
         demoWorkspace.classList.add("show");
         demoWorkspace.setAttribute("aria-hidden", "false");
-        demoWorkspace.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.scrollTo({ top: 0, behavior: "auto" });
         saveEvent("open_demo_workspace", source || "unknown", { industry: demoBusinesses[activeBusinessIndex].industry });
       }
-
       function closeDemoWorkspace() {
         demoWorkspace.classList.remove("show");
         demoWorkspace.setAttribute("aria-hidden", "true");
-        const home = document.querySelector("#about");
-        if (home) home.scrollIntoView({ behavior: "smooth", block: "start" });
+        siteRoot.classList.remove("is-hidden");
+        window.scrollTo({ top: 0, behavior: "auto" });
       }
 
       function openBookCall(source) {
@@ -2957,28 +1656,164 @@
         window.open(BOOK_CALL_URL, "_blank", "noopener,noreferrer");
       }
 
-      // ── Intro ──
+      /* ───────── Inline "Run Demo" / "View Code" ───────── */
+      const demoLog = document.getElementById("demoLog");
+      const demoStatus = document.getElementById("demoStatus");
+      const runDemoBtn = document.getElementById("runDemoBtn");
+      const viewCodeBtn = document.getElementById("viewCodeBtn");
+      let demoTimers = [];
+
+      const demoSteps = [
+        ["trigger", "tag", "Ticket #4821 received via email"],
+        ["agent.triage", "tag", "intent=refund_request  urgency=high  sentiment=negative"],
+        ["crm.lookup", "tag", "Account ACME-102 matched · plan=Growth · 14 orders"],
+        ["policy.check", "tag", "Refund under limit → auto-approve allowed"],
+        ["agent.reply", "tag", "Reply drafted in 1.1s · tone=empathetic"],
+        ["helpdesk.update", "tag", "Ticket tagged billing/refund · routed to Priority queue"],
+        ["crm.update", "tag", "Timeline note added · follow-up scheduled in 24h"],
+        ["analytics.log", "ok", "Run complete in 2.3s · 7 steps · 0 errors"]
+      ];
+      const demoCode = [
+        "# workflow: support-triage",
+        "trigger: email.inbound",
+        "steps:",
+        "  - agent: triage",
+        "    outputs: [intent, urgency, sentiment]",
+        "  - connector: crm.lookup",
+        "  - policy: refund_limit",
+        "    on_pass: auto_approve",
+        "    on_fail: escalate",
+        "  - agent: reply",
+        "    approval: auto",
+        "  - connector: helpdesk.update",
+        "  - connector: crm.update",
+        "  - analytics: log_run"
+      ];
+
+      function clearDemoTimers() { demoTimers.forEach(clearTimeout); demoTimers = []; }
+      function setDemoStatus(text, cls) {
+        demoStatus.textContent = text;
+        demoStatus.className = "demo-status" + (cls ? " " + cls : "");
+      }
+      function appendLine(parts) {
+        const line = document.createElement("span");
+        line.className = "ln";
+        parts.forEach(p => {
+          const s = document.createElement("span");
+          if (p[1]) s.className = p[1];
+          s.textContent = p[0];
+          line.appendChild(s);
+        });
+        demoLog.appendChild(line);
+        demoLog.scrollTop = demoLog.scrollHeight;
+      }
+      function showDemoIdle() {
+        clearDemoTimers();
+        demoLog.textContent = "";
+        appendLine([["$ ", "dim"], ["Press “Run Demo” to execute a sample support-triage workflow, or “View Code” to see its definition.", "dim"]]);
+        setDemoStatus("Idle", "");
+        runDemoBtn.classList.remove("active");
+        viewCodeBtn.classList.remove("active");
+      }
+      function runDemo() {
+        clearDemoTimers();
+        demoLog.textContent = "";
+        runDemoBtn.classList.add("active");
+        viewCodeBtn.classList.remove("active");
+        setDemoStatus("Running…", "running");
+        const start = new Date();
+        demoSteps.forEach((step, i) => {
+          demoTimers.push(setTimeout(() => {
+            const t = new Date(start.getTime() + i * 290).toLocaleTimeString([], { hour12: false });
+            appendLine([[t + "  ", "t"], ["[" + step[0] + "] ", "gold-tag"], [step[2], step[1] === "ok" ? "ok" : ""]]);
+            const last = demoLog.lastChild.children[1];
+            if (last) last.className = "tag";
+          }, reduceMotion ? 0 : 420 * (i + 1)));
+        });
+        demoTimers.push(setTimeout(() => {
+          setDemoStatus("Completed · 2.3s", "done");
+          runDemoBtn.classList.remove("active");
+        }, reduceMotion ? 0 : 420 * (demoSteps.length + 1)));
+      }
+      function viewDemoCode() {
+        clearDemoTimers();
+        demoLog.textContent = "";
+        viewCodeBtn.classList.add("active");
+        runDemoBtn.classList.remove("active");
+        setDemoStatus("Workflow definition", "");
+        demoCode.forEach(l => appendLine([[l, l.trim().charAt(0) === "#" ? "dim" : ""]]));
+      }
+      showDemoIdle();
+
+      /* ───────── Hero live console ───────── */
+      const liveFeed = document.getElementById("liveFeed");
+      const kpiTasks = document.getElementById("kpiTasks");
+      const agentBars = document.querySelectorAll(".agent-bar i");
+      const feedEvents = [
+        ["Support Agent", "Ticket #4821 classified · High priority"],
+        ["CRM Sync", "Account record updated · ACME-102"],
+        ["Lead Qualifier", "New lead scored 87 · visit booked"],
+        ["Support Agent", "Reply drafted and sent in 1.2s"],
+        ["Dispatch Agent", "Job #9027 assigned to nearest technician"],
+        ["Analytics", "Weekly ROI report generated"],
+        ["CRM Sync", "14 contacts synced from helpdesk"],
+        ["Support Agent", "Refund request auto-approved by policy"]
+      ];
+      let feedIndex = 0;
+      let taskCount = 1284;
+
+      function nowTime() { return new Date().toLocaleTimeString([], { hour12: false }); }
+      function pushFeed() {
+        if (!liveFeed) return;
+        const ev = feedEvents[feedIndex % feedEvents.length];
+        feedIndex++;
+        const li = document.createElement("li");
+        const time = document.createElement("time");
+        time.textContent = nowTime();
+        const text = document.createElement("span");
+        const strong = document.createElement("strong");
+        strong.textContent = ev[0] + " ";
+        text.appendChild(strong);
+        text.appendChild(document.createTextNode(ev[1]));
+        li.appendChild(time);
+        li.appendChild(text);
+        liveFeed.insertBefore(li, liveFeed.firstChild);
+        while (liveFeed.children.length > 4) liveFeed.removeChild(liveFeed.lastChild);
+      }
+      function tickConsole() {
+        if (document.hidden) return;
+        pushFeed();
+        taskCount += 1 + Math.floor(Math.random() * 4);
+        if (kpiTasks) kpiTasks.textContent = taskCount.toLocaleString("en-IN");
+        agentBars.forEach(bar => bar.style.setProperty("--w", (38 + Math.floor(Math.random() * 56)) + "%"));
+      }
+      if (liveFeed) {
+        for (let i = 0; i < 3; i++) pushFeed();
+        if (!reduceMotion) setInterval(tickConsole, 2600);
+      }
+
+      /* ───────── Intro ───────── */
+      let introClosed = false;
       function closeIntro() {
+        if (introClosed) return;
+        introClosed = true;
         intro.classList.add("intro-hidden");
         siteRoot.classList.add("ready");
         document.documentElement.classList.remove("intro-lock");
         document.body.classList.remove("intro-lock");
+        initReveal();
+        setTimeout(() => { if (intro.parentNode) intro.parentNode.removeChild(intro); }, 600);
       }
-
       skipIntroBtn.addEventListener("click", closeIntro);
-      setTimeout(closeIntro, 1700);
+      setTimeout(closeIntro, reduceMotion ? 0 : 2800);
 
-      // ── Cookie Consent ──
-      const consent = getConsent();
-      if (!consent) {
-        cookieBanner.classList.add("show");
-      }
-
+      /* ───────── Cookie consent ───────── */
+      if (!getConsent()) cookieBanner.classList.add("show");
       document.getElementById("acceptCookies").addEventListener("click", () => setConsent("accepted"));
       document.getElementById("declineCookies").addEventListener("click", () => setConsent("declined"));
       document.getElementById("essentialCookies").addEventListener("click", () => setConsent("essential"));
 
-      // ── Demo Business/Task List Events ──
+      /* ───────── Demo list events ───────── */
       businessList.addEventListener("click", function (event) {
         const card = event.target.closest("[data-business-index]");
         if (!card) return;
@@ -2986,7 +1821,6 @@
         activeTaskIndex = 0;
         renderDemoWorkspace();
       });
-
       taskList.addEventListener("click", function (event) {
         const chip = event.target.closest("[data-task-index]");
         if (!chip) return;
@@ -2995,182 +1829,105 @@
         renderPipeline();
       });
 
-      // ── Global Click Handler ──
+      /* ───────── Global click handler ───────── */
       document.addEventListener("click", function (event) {
         const actionEl = event.target.closest("[data-action]");
         const trackEl = event.target.closest("[data-track]");
-
-        if (trackEl) {
-          saveEvent("external_click", trackEl.getAttribute("data-track"), {});
-        }
-
+        if (trackEl) saveEvent("external_click", trackEl.getAttribute("data-track"), {});
         if (!actionEl) return;
 
         const action = actionEl.getAttribute("data-action");
         const source = actionEl.getAttribute("data-source") || actionEl.textContent.trim();
 
-        if (action === "demo-gate") {
-          event.preventDefault();
-          openDemoWorkspace(source);
-          return;
-        }
-
+        if (action === "demo-gate" || action === "launch-demo") { event.preventDefault(); openDemoWorkspace(source); return; }
+        if (action === "book-call") { event.preventDefault(); openBookCall(source); return; }
+        if (action === "account") { event.preventDefault(); openAccountModal(source); return; }
+        if (action === "back-home") { event.preventDefault(); closeDemoWorkspace(); return; }
+        if (action === "run-demo") { event.preventDefault(); runDemo(); saveEvent("run_demo", source, {}); return; }
+        if (action === "view-code") { event.preventDefault(); viewDemoCode(); saveEvent("view_code", source, {}); return; }
         if (action === "scroll") {
-          const target = actionEl.getAttribute("data-target");
-          const section = document.querySelector(target);
-          if (section) {
-            section.scrollIntoView({ behavior: "smooth", block: "start" });
-            saveEvent("scroll_to", source, { target: target });
-          }
+          const section = document.querySelector(actionEl.getAttribute("data-target"));
+          if (section) { section.scrollIntoView({ behavior: "smooth", block: "start" }); saveEvent("scroll_to", source, {}); }
           return;
         }
-
-        if (action === "launch-demo") {
-          event.preventDefault();
-          openDemoWorkspace(source);
-          return;
-        }
-
-        if (action === "book-call") {
-          event.preventDefault();
-          openBookCall(source);
-          return;
-        }
-
-        if (action === "account") {
-          event.preventDefault();
-          openAccountModal(source);
-          return;
-        }
-
-        if (action === "back-home") {
-          event.preventDefault();
-          closeDemoWorkspace();
-          return;
-        }
-
-        if (action === "policy") {
-          event.preventDefault();
-          openPolicy(actionEl.getAttribute("data-policy"));
-        }
+        if (action === "policy") { event.preventDefault(); openPolicy(actionEl.getAttribute("data-policy")); }
       });
 
-      // ── Modal Close Handlers ──
       document.querySelectorAll("[data-close='policy']").forEach(btn => btn.addEventListener("click", closePolicy));
       document.querySelectorAll("[data-close='account']").forEach(btn => btn.addEventListener("click", closeAccountModal));
+      policyModal.addEventListener("click", e => { if (e.target === policyModal) closePolicy(); });
+      if (accountModal) accountModal.addEventListener("click", e => { if (e.target === accountModal) closeAccountModal(); });
 
-      policyModal.addEventListener("click", function (event) {
-        if (event.target === policyModal) closePolicy();
-      });
-      if (accountModal) {
-        accountModal.addEventListener("click", function (event) {
-          if (event.target === accountModal) closeAccountModal();
-        });
+      /* ───────── Scroll reveal (starts once the intro is gone) ───────── */
+      let revealStarted = false;
+      function initReveal() {
+        if (revealStarted) return;
+        revealStarted = true;
+        const els = document.querySelectorAll(".reveal");
+        if (!("IntersectionObserver" in window)) { els.forEach(el => el.classList.add("in-view")); return; }
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) { entry.target.classList.add("in-view"); observer.unobserve(entry.target); }
+          });
+        }, { threshold: 0.03, rootMargin: "0px 0px -4% 0px" });
+        els.forEach(el => observer.observe(el));
       }
 
-      // ── Scroll Reveal ──
-      const revealEls = document.querySelectorAll(".reveal");
-      const observer = new IntersectionObserver(
-        entries => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("in-view");
-              observer.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.02 }
-      );
-      revealEls.forEach(el => observer.observe(el));
-
-      // ── Mobile Hamburger Toggle ──
+      /* ───────── Mobile menu ───────── */
       const hamburger = document.getElementById("navHamburger");
       const mobileMenu = document.getElementById("mobileMenu");
+      function closeMobileMenu() {
+        mobileMenu.classList.remove("open");
+        hamburger.classList.remove("open");
+        hamburger.setAttribute("aria-expanded", "false");
+      }
       if (hamburger && mobileMenu) {
         hamburger.addEventListener("click", function (e) {
           e.stopPropagation();
-          const isOpen = mobileMenu.classList.contains("open");
-          if (isOpen) {
-            mobileMenu.classList.remove("open");
-            hamburger.classList.remove("open");
-            hamburger.setAttribute("aria-expanded", "false");
-          } else {
-            mobileMenu.classList.add("open");
-            hamburger.classList.add("open");
-            hamburger.setAttribute("aria-expanded", "true");
-          }
+          const open = mobileMenu.classList.toggle("open");
+          hamburger.classList.toggle("open", open);
+          hamburger.setAttribute("aria-expanded", String(open));
         });
-        // Close menu when any mobile link is tapped
-        mobileMenu.querySelectorAll("a").forEach(function(link) {
-          link.addEventListener("click", function() {
-            mobileMenu.classList.remove("open");
-            hamburger.classList.remove("open");
-            hamburger.setAttribute("aria-expanded", "false");
-          });
-        });
-        // Close menu when clicking outside
-        document.addEventListener("click", function(e) {
-          if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
-            mobileMenu.classList.remove("open");
-            hamburger.classList.remove("open");
-            hamburger.setAttribute("aria-expanded", "false");
-          }
+        mobileMenu.querySelectorAll("a").forEach(link => link.addEventListener("click", closeMobileMenu));
+        document.addEventListener("click", function (e) {
+          if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) closeMobileMenu();
         });
       }
 
-      // ── Mobile theme toggle mirrors desktop ──
       const themeToggleMobile = document.getElementById("themeToggleMobile");
       const themeToggleDesktop = document.getElementById("themeToggle");
       if (themeToggleMobile && themeToggleDesktop) {
-        themeToggleMobile.addEventListener("click", function() {
-          themeToggleDesktop.click();
-        });
+        themeToggleMobile.addEventListener("click", () => themeToggleDesktop.click());
       }
 
-      // ── Welcome Dropdown Toggle ──
+      /* ───────── Welcome dropdown ───────── */
       const welcomeBtn = document.getElementById("navWelcomeBtn");
       const welcomeDropdown = document.getElementById("navWelcomeDropdown");
       const welcomeChevron = document.getElementById("welcomeChevron");
-
+      function setWelcome(open) {
+        welcomeDropdown.style.display = open ? "block" : "none";
+        if (welcomeChevron) welcomeChevron.style.transform = open ? "rotate(180deg)" : "rotate(0deg)";
+        welcomeBtn.setAttribute("aria-expanded", String(open));
+      }
       if (welcomeBtn && welcomeDropdown) {
         welcomeBtn.addEventListener("click", function (event) {
           event.preventDefault();
           event.stopPropagation();
-          const isOpen = welcomeDropdown.style.display === "block";
-          if (isOpen) {
-            welcomeDropdown.style.display = "none";
-            if (welcomeChevron) welcomeChevron.style.transform = "rotate(0deg)";
-            welcomeBtn.setAttribute("aria-expanded", "false");
-          } else {
-            welcomeDropdown.style.display = "block";
-            if (welcomeChevron) welcomeChevron.style.transform = "rotate(180deg)";
-            welcomeBtn.setAttribute("aria-expanded", "true");
-          }
+          setWelcome(welcomeDropdown.style.display !== "block");
         });
-
         document.addEventListener("click", function (event) {
-          if (!welcomeDropdown.contains(event.target) && event.target !== welcomeBtn) {
-            welcomeDropdown.style.display = "none";
-            if (welcomeChevron) welcomeChevron.style.transform = "rotate(0deg)";
-            welcomeBtn.setAttribute("aria-expanded", "false");
-          }
+          if (!welcomeDropdown.contains(event.target) && !welcomeBtn.contains(event.target)) setWelcome(false);
         });
       }
 
-      // ── Escape Key ──
+      /* ───────── Escape key ───────── */
       window.addEventListener("keydown", function (event) {
-        if (event.key === "Escape") {
-          closePolicy();
-          closeAccountModal();
-          closeIntro();
-        }
+        if (event.key === "Escape") { closePolicy(); closeAccountModal(); closeMobileMenu(); closeIntro(); }
       });
 
-      // ── Public API ──
+      /* ───────── Public API ───────── */
       window.AIAS = {
-        getInteractions: function () {
-          return JSON.parse(localStorage.getItem(interactionStorageKey) || "[]");
-        },
+        getInteractions: function () { return safeLS(() => JSON.parse(localStorage.getItem(interactionStorageKey) || "[]"), []); },
         getConsent: getConsent
       };
     })();
@@ -3179,54 +1936,21 @@
   <!-- AIAS Business Chatbot Widget -->
   <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
 
-  <div class="theme-crossfade" id="themeCrossfade"></div>
-
   <script>
-    // ── Smooth theme toggle — no flash, pure CSS property transitions ──
-    const themeToggle = document.getElementById('themeToggle');
-
-    function setTheme(isDark, instant) {
-      if (instant) {
-        // Suppress all transitions during page-load apply
-        document.documentElement.classList.add('no-transition');
-      }
-      if (isDark) {
-        document.documentElement.classList.add('dark-theme');
-        document.documentElement.classList.remove('light-theme');
-        localStorage.setItem('theme', 'dark');
-      } else {
-        document.documentElement.classList.add('light-theme');
-        document.documentElement.classList.remove('dark-theme');
-        localStorage.setItem('theme', 'light');
-      }
-      if (instant) {
-        // Re-enable transitions after a single paint frame
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            document.documentElement.classList.remove('no-transition');
-          });
-        });
-      }
-    }
-
-    // Apply saved theme instantly on load (no transition flash)
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      setTheme(true, true);
-    } else {
-      setTheme(false, true);
-    }
-
-    // User clicks → smooth animated transition
-    themeToggle.addEventListener('click', () => {
-      document.documentElement.classList.add('theme-transitioning');
-      const goingDark = document.documentElement.classList.contains('light-theme');
-      setTheme(goingDark, false);
-      themeToggle.setAttribute('aria-checked', goingDark);
-      setTimeout(() => {
-        document.documentElement.classList.remove('theme-transitioning');
-      }, 550);
-    });
+    // Theme toggle: the initial theme is already applied in <head>, so this only handles user clicks.
+    (function () {
+      var toggle = document.getElementById('themeToggle');
+      if (!toggle) return;
+      toggle.addEventListener('click', function () {
+        var root = document.documentElement;
+        var goingDark = !root.classList.contains('dark-theme');
+        root.classList.add('theme-transitioning');
+        root.classList.toggle('dark-theme', goingDark);
+        root.classList.toggle('light-theme', !goingDark);
+        try { localStorage.setItem('theme', goingDark ? 'dark' : 'light'); } catch (e) {}
+        setTimeout(function () { root.classList.remove('theme-transitioning'); }, 550);
+      });
+    })();
   </script>
 </body>
 </html>

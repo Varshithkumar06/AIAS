@@ -9,7 +9,7 @@ import sys
 import secrets
 from datetime import datetime, timedelta, timezone
 
-from flask import Flask, redirect, render_template, request, jsonify, session as flask_session, url_for
+from flask import Flask, redirect, render_template, request, jsonify, session as flask_session, url_for, send_from_directory
 from flask_wtf.csrf import CSRFProtect
 
 # Ensure project root is in path
@@ -123,6 +123,11 @@ def create_app():
             user_name=flask_session.get("user_name", ""),
             user_email=flask_session.get("user_email", ""),
         )
+
+    # ── Asset Files Route ──
+    @app.route("/asset/<path:filename>")
+    def serve_asset(filename):
+        return send_from_directory(os.path.join(app.root_path, "asset"), filename)
 
     # ── Admin Dashboard ──
     ADMIN_EMAILS = {"aiasprivateltd@gmail.com", "varshithkumar815@gmail.com"}
@@ -595,8 +600,8 @@ def create_app():
     # ── Client Rate Limiting & Periodic Cleanup ──
     @app.before_request
     def before_request():
-        # Exclude static assets from rate limiting
-        if request.endpoint == 'static' or request.path.startswith('/static/'):
+        # Exclude static assets and media from rate limiting
+        if request.endpoint in ('static', 'serve_asset') or request.path.startswith('/static/') or request.path.startswith('/asset/'):
             return
 
         # Resolve real client IP

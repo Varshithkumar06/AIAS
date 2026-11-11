@@ -137,7 +137,7 @@ class EmailService:
     @staticmethod
     def send_welcome_email(recipient_email, recipient_name=""):
         """
-        Send a welcome email every time a user logs in or signs up.
+        Send a welcome email to newly registered users.
 
         Args:
             recipient_email: The email address to send to
@@ -157,13 +157,13 @@ class EmailService:
         html_body = EmailService._build_welcome_email_html(recipient_email, recipient_name)
 
         msg = MIMEMultipart("alternative")
-        msg["Subject"] = f"Welcome back to AIAS, {recipient_name or 'there'}!"
+        msg["Subject"] = f"Welcome to AIAS, {recipient_name or 'there'}!"
         msg["From"] = f"{Config.MAIL_SENDER_NAME} <{Config.MAIL_USERNAME}>"
         msg["To"] = recipient_email
 
         plain_text = (
             f"Welcome to AIAS, {recipient_name or 'there'}!\n\n"
-            f"You've successfully signed in to your AIAS account.\n"
+            f"Thank you for creating an account with AIAS.\n"
             f"We're building the future of intelligent business automation — and you're part of it.\n\n"
             f"— The AIAS Team\n"
         )
@@ -208,7 +208,7 @@ class EmailService:
 
         <!-- Title -->
         <div style="padding: 16px 32px; border-bottom: 1px solid #f0f0f0;">
-            <h1 style="color: #222222; margin: 0; font-size: 24px; font-weight: 400;">Welcome Back</h1>
+            <h1 style="color: #222222; margin: 0; font-size: 24px; font-weight: 400;">Welcome to AIAS</h1>
         </div>
 
         <!-- Body Content -->
@@ -216,7 +216,7 @@ class EmailService:
             <p style="font-size: 16px; color: #3c4043; margin-top: 0;">{greeting}</p>
 
             <p style="font-size: 16px; color: #3c4043; line-height: 1.6;">
-                You've successfully signed in to your AIAS account. We're glad to have you here.
+                Thank you for creating an account with AIAS. Your account is now active and ready to automate your workflows.
             </p>
 
             <!-- Highlight Box -->
@@ -275,7 +275,7 @@ class EmailService:
         <!-- Footer -->
         <div style="padding: 20px 32px; background-color: #fafafa; border-top: 1px solid #f0f0f0; text-align: center;">
             <p style="font-size: 12px; color: #999999; margin: 0; line-height: 1.5;">
-                This email was sent to <a href="mailto:{recipient_email}" style="color: #c4a137; text-decoration: none;">{recipient_email}</a> because you signed in to your AIAS account.
+                This email was sent to <a href="mailto:{recipient_email}" style="color: #c4a137; text-decoration: none;">{recipient_email}</a> because you created an AIAS account.
             </p>
         </div>
     </div>

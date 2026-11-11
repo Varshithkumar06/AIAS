@@ -10,6 +10,58 @@ from config import Config
 # Logger
 logger = logging.getLogger("aias.database")
 
+# ── Fix for dnspython / WSL DNS search label > 63 chars issue ──
+try:
+    import dns.resolver
+    import dns.name
+
+    _orig_read_resolv_conf = dns.resolver.Resolver.read_resolv_conf
+
+    def _safe_read_resolv_conf(self, f):
+        try:
+            _orig_read_resolv_conf(self, f)
+        except (dns.name.LabelTooLong, Exception) as err:
+            logger.warning("[DB] Resolv.conf contained malformed search domain (%s). Using fallback DNS nameservers.", err)
+            nameservers = []
+            if isinstance(f, str):
+                try:
+                    with open(f, "r", encoding="utf-8") as fp:
+                        lines = fp.readlines()
+                except Exception:
+                    lines = []
+            elif hasattr(f, "seek"):
+                try:
+                    f.seek(0)
+                    lines = f.readlines()
+                except Exception:
+                    lines = []
+            else:
+                lines = []
+
+            for line in lines:
+                parts = line.strip().split()
+                if len(parts) >= 2 and parts[0] == "nameserver":
+                    nameservers.append(parts[1])
+
+            if not nameservers:
+                nameservers = ["8.8.8.8", "1.1.1.1"]
+
+            self.nameservers = nameservers
+            self.search = []
+
+    dns.resolver.Resolver.read_resolv_conf = _safe_read_resolv_conf
+
+    # Pre-initialize default_resolver safely so get_default_resolver never throws
+    try:
+        dns.resolver.get_default_resolver()
+    except Exception:
+        _clean_res = dns.resolver.Resolver(configure=False)
+        _clean_res.nameservers = ["8.8.8.8", "1.1.1.1"]
+        _clean_res.search = []
+        dns.resolver.default_resolver = _clean_res
+except ImportError:
+    pass
+
 
 def sanitize_doc(doc):
     """

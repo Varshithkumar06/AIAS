@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="intro-lock">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,10 +16,11 @@
       --ds-black: #0A0A0A;
       --ds-white: #FFFFFF;
       --ds-soft: #F9F7F2;
-      --ds-gold: #D4AF37;
-      --ds-gold-deep: #B88912;
+      --ds-gold: transparent;
+      --ds-gold-deep: transparent;
       --ds-muted: #646464;
-      --ds-line: rgba(0,0,0,0.08);
+      --ds-line: transparent;
+      --ds-light-green: #e8f5e9;
       --page-max: 1280px;
       --page-pad: clamp(1rem, 3vw, 2.75rem);
       --serif: 'Cormorant Garamond', Georgia, serif;
@@ -27,28 +28,19 @@
     }
 
     html { scroll-behavior: smooth; }
-    html.intro-lock,
-    body.intro-lock {
-      overflow: hidden;
-      height: 100%;
-      overscroll-behavior: none;
-    }
-    body.intro-lock {
-      touch-action: none;
-    }
-    body { font-family: var(--sans); background: var(--ds-white); color: var(--ds-black); }
+
+    body { font-family: var(--sans); background: var(--ds-light-green); color: var(--ds-black); }
 
     .site {
       width: 100%;
       min-height: 100vh;
       background: var(--ds-white);
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 600ms ease, transform 600ms ease;
-    }
-    .site.ready {
       opacity: 1;
       transform: translateY(0);
+      transition: opacity 300ms ease, transform 300ms ease;
+    }
+    .site.visible {
+      opacity: 1;
     }
 
     .cinematic-intro {
@@ -68,7 +60,7 @@
       position: absolute;
       width: 60vmax;
       height: 60vmax;
-      background: radial-gradient(circle, rgba(212,175,55,0.22) 0%, rgba(212,175,55,0.08) 36%, rgba(212,175,55,0) 70%);
+      background: radial-gradient(circle, transparent 0%, transparent 36%, transparent 70%);
       top: -32vmax;
       right: -18vmax;
       animation: haloDrift 7s ease-in-out infinite;
@@ -78,7 +70,7 @@
       position: absolute;
       width: 52vmax;
       height: 52vmax;
-      background: radial-gradient(circle, rgba(212,175,55,0.16) 0%, rgba(212,175,55,0) 68%);
+      background: radial-gradient(circle, transparent 0%, transparent 68%);
       bottom: -30vmax;
       left: -18vmax;
       animation: haloDrift 7s ease-in-out infinite 1.2s;
@@ -155,7 +147,7 @@
       position: absolute;
       right: 2rem;
       bottom: 2rem;
-      border: 0.5px solid rgba(212,175,55,0.8);
+      border: 0.5px solid transparent;
       background: rgba(255,255,255,0.98);
       color: #9f760c;
       font-family: var(--sans);
@@ -177,6 +169,7 @@
     .site > .keywords-section,
     .site > .pricing,
     .site > .results,
+    .site > .projects,
     .site > .seo-block,
     .site > .cta-final,
     .site > footer {
@@ -289,7 +282,7 @@
       padding-bottom: 3.4rem;
       border-bottom: 0.5px solid var(--ds-line);
       background:
-        radial-gradient(circle at 88% 4%, rgba(212,175,55,0.12), rgba(212,175,55,0) 36%),
+        radial-gradient(circle at 88% 4%, transparent, transparent 36%),
         #fff;
     }
     .hero-eyebrow {
@@ -306,7 +299,7 @@
       content: "";
       width: 28px;
       height: 0.5px;
-      background: var(--ds-gold-deep);
+      background: transparent;
       display: block;
     }
     h1 {
@@ -520,7 +513,7 @@
       content: "";
       width: 24px;
       height: 0.5px;
-      background: var(--ds-gold-deep);
+      background: transparent;
       display: block;
     }
     .section-title {
@@ -554,7 +547,7 @@
       padding: 1.5rem;
       border: 0.5px solid transparent;
     }
-    .problem-item:hover { border-color: rgba(212,175,55,0.36); }
+    .problem-item:hover { border-color: transparent; }
     .problem-num {
       font-family: var(--serif);
       color: var(--ds-gold-deep);
@@ -607,7 +600,7 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--ds-gold-deep);
-      border: 0.5px solid rgba(212,175,55,0.6);
+      border: 0.5px solid transparent;
       padding: 4px 8px;
     }
 
@@ -854,12 +847,12 @@
     .business-card:hover,
     .task-chip:hover {
       transform: translateY(-2px);
-      border-color: rgba(212,175,55,0.45);
+      border-color: transparent;
       background: #fffaf0;
     }
     .business-card.active,
     .task-chip.active {
-      border-color: rgba(212,175,55,0.75);
+      border-color: transparent;
       background: #fff8e6;
     }
     .business-card strong,
@@ -938,7 +931,7 @@
       justify-content: center;
       width: 26px;
       height: 26px;
-      border: 0.5px solid rgba(212,175,55,0.75);
+      border: 0.5px solid transparent;
       color: var(--ds-gold-deep);
       margin-bottom: 0.7rem;
       font-size: 12px;
@@ -968,7 +961,8 @@
       background: #fcfbf7;
     }
 
-    .keywords-section {
+    #seo-keywords.keywords-section::before { display: none !important; }
+.keywords-section {
       padding-top: 3.1rem;
       padding-bottom: 3.1rem;
       border-bottom: 0.5px solid var(--ds-line);
@@ -1011,8 +1005,8 @@
       flex-direction: column;
     }
     .price-card.featured {
-      border-color: rgba(212,175,55,0.6);
-      box-shadow: 0 8px 20px rgba(212,175,55,0.14);
+      border-color: transparent;
+      box-shadow: 0 8px 20px transparent;
     }
     .price-tier {
       font-size: 12px;
@@ -1057,7 +1051,7 @@
       content: "-";
       position: absolute;
       left: 0;
-      color: var(--ds-gold-deep);
+      color: transparent;
     }
     .price-btn {
       margin-top: auto;
@@ -1621,6 +1615,7 @@
       .site > .keywords-section,
       .site > .pricing,
       .site > .results,
+      .site > .projects,
       .site > .seo-block,
       .site > .cta-final,
       .site > footer {
@@ -1636,6 +1631,7 @@
       .keywords-section,
       .pricing,
       .results,
+      .projects,
       .seo-block,
       .cta-final { padding-top: 2.6rem; padding-bottom: 2.6rem; }
       h1 { font-size: clamp(34px, 11vw, 50px); }
@@ -1670,9 +1666,242 @@
       .hero,
       .tagline-band { opacity: 1; transform: none; }
     }
-  </style>
+  
+    /* Projects Section */
+    .projects {
+      padding-top: 5.5rem;
+      padding-bottom: 5.5rem;
+    }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .project-card {
+      border: 0.5px solid var(--ds-line);
+      background: #fff;
+      border-radius: 14px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 240ms ease, box-shadow 240ms ease, border-color 240ms ease;
+    }
+    .project-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(47, 93, 70, 0.08);
+      border-color: var(--sg-500);
+    }
+    .project-card .project-tag {
+      display: inline-block;
+      align-self: flex-start;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: var(--sg-100);
+      color: var(--sg-700);
+      border-radius: 999px;
+      margin-bottom: 0.85rem;
+    }
+    .project-title {
+      font-family: var(--serif);
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 1.25;
+      color: var(--ds-black);
+      margin: 0 0 0.5rem;
+    }
+    .project-description {
+      color: var(--ds-muted);
+      font-size: 14px;
+      line-height: 1.65;
+      margin: 0 0 1.5rem;
+    }
+    .project-links {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      margin-top: auto;
+    }
+    .project-links .project-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 180ms ease;
+    }
+    .project-link-code {
+      border: 1px solid var(--ds-line);
+      color: var(--ds-black);
+      background: var(--ds-white);
+    }
+    .project-link-code:hover {
+      background: var(--sg-50);
+      border-color: var(--sg-700);
+      color: var(--sg-700);
+    }
+    .project-link-deploy {
+      background: var(--sg-700);
+      color: #fff;
+    }
+    .project-link-deploy:hover {
+      background: var(--sg-900);
+      color: #fff;
+    }
+    .coming-soon-tag {
+      background: var(--sg-50);
+      color: var(--ds-muted);
+      border: 1px dashed var(--ds-line);
+      cursor: default;
+    }
+    .project-card.coming-soon {
+      background: rgba(243, 247, 239, 0.4);
+    }
+</style>
+  <meta name="theme-color" content="#F3F7EF" />
+<style id="aias-premium">
+.site > .hero{padding-top:7rem;padding-bottom:6.5rem}
+h1{font-size:clamp(46px,6.8vw,96px);line-height:1;letter-spacing:-.02em;font-weight:300;max-width:1000px}
+.hero-sub{font-size:19px;max-width:640px;line-height:1.8;margin-bottom:2.4rem}
+.hero-actions{margin-bottom:0}
+.hero-eyebrow,.section-tag{text-transform:none;letter-spacing:.05em;font-family:var(--serif);font-style:italic;font-size:18px;font-weight:400}
+.problems,.solutions,.how-it-works,.use-cases,.live-demo,.pricing,.results,.projects{padding-top:5.5rem;padding-bottom:5.5rem}
+.cta-final{padding-top:6.5rem;padding-bottom:6.5rem}
+.section-title{font-size:clamp(34px,4.6vw,60px);max-width:900px;margin-bottom:1.1rem}
+.section-copy{font-size:17px;max-width:620px}
+.feature-grid,.problem-grid,.how-grid,.use-grid,.pricing-grid{margin-top:3rem}
+.feature-card,.how-card,.use-card{padding:2rem}
+.feature-name,.how-title,.use-title{font-family:var(--serif);font-size:26px;font-weight:400;line-height:1.2}
+.problem-title{font-family:var(--serif);font-size:24px;font-weight:400}
+.problem-item{padding:2rem}
+.feature-outcome{text-transform:none;letter-spacing:.02em;font-size:13px}
+.price-amount{font-size:52px}
+.footer-copy{letter-spacing:.04em}
+@media (max-width:760px){.site > .hero{padding-top:4rem;padding-bottom:3.5rem}.problems,.solutions,.how-it-works,.use-cases,.live-demo,.pricing,.results,.projects,.cta-final{padding-top:3.5rem;padding-bottom:3.5rem}.feature-card,.how-card,.use-card,.problem-item,.project-card{padding:1.4rem}}
+</style>
+<style id="aias-sage">
+/* White + light sage green, with deep forest for contrast */
+:root{
+  --sg-white:#FCFDFA; --sg-50:#F3F7EF; --sg-100:#E6EEDF; --sg-200:#D3E1C9; --sg-300:#B7CFAA; --sg-500:#86A98F;
+  --sg-700:#2F5D46; --sg-900:#17261E; --sg-ink:#17261E;
+  --ds-black:#17261E; --ds-white:#FCFDFA; --ds-soft:#F3F7EF; --ds-gold:#86A98F; --ds-gold-deep:#2F5D46;
+  --ds-muted:#55675C; --ds-line:transparent;
+  --sg-shadow:0 1px 2px rgba(23,38,30,0.04),0 14px 34px rgba(23,38,30,0.06);
+}
+html,body,.site{background:var(--sg-white);color:var(--sg-ink)}
+::selection{background:var(--sg-300);color:var(--sg-900)}
+:focus-visible{outline:2px solid var(--sg-700);outline-offset:3px}
+.gold-text{color:var(--sg-700)}
+
+/* intro + nav + logo */
+.cinematic-intro{background:var(--sg-50)}
+.cinematic-intro::before{background:radial-gradient(circle,transparent 0%,transparent 40%,transparent 70%)}
+.cinematic-intro::after{background:radial-gradient(circle,transparent 0%,transparent 68%)}
+.skip-intro{background:var(--sg-white);color:var(--sg-700);border:1px solid rgba(47,93,70,.4);border-radius:999px}
+nav{background:rgba(252,253,250,.88);border-bottom:1px solid var(--ds-line)}
+.logo span{color:var(--sg-700)}
+nav a:hover{color:var(--sg-700)}
+nav .logo svg{filter:drop-shadow(0 2px 8px rgba(47,93,70,.25))!important}
+nav .logo svg polygon{fill:var(--sg-900)}
+#logoGold stop:nth-of-type(1){stop-color:#E6EEDF}#logoGold stop:nth-of-type(2){stop-color:#9DBFA5}#logoGold stop:nth-of-type(3){stop-color:#4E8168}
+.welcome-dropdown{background:var(--sg-white);border:1px solid var(--ds-line);box-shadow:var(--sg-shadow)}
+.nav-welcome:hover{color:var(--sg-700)!important}
+
+/* buttons */
+.btn-primary,.nav-cta,.price-btn,.lead-form button,.signin-form button,.auth-tab.active{
+  background:var(--sg-700);color:#fff;border:1px solid var(--sg-700);border-radius:999px}
+.btn-primary:hover,.nav-cta:hover,.price-btn:hover{background:var(--sg-900);border-color:var(--sg-900);color:#fff}
+.btn-secondary{background:transparent;color:var(--sg-700);border:1px solid var(--sg-700);border-radius:999px}
+.btn-secondary:hover{background:var(--sg-100)}
+.nav-cta,.btn-primary,.btn-secondary,.price-btn{padding-left:22px;padding-right:22px}
+.cookie-btn.primary{background:var(--sg-300);border-color:var(--sg-300);color:var(--sg-900)}
+.cookie-banner{background:rgba(23,38,30,.96);border:1px solid rgba(183,207,170,.3);border-radius:14px}
+.toast{background:var(--sg-900);border-radius:10px}
+
+/* hero */
+.hero{background:radial-gradient(circle at 92% 0%,transparent,transparent 46%),radial-gradient(circle at 0% 100%,transparent,transparent 52%),var(--sg-50);border-bottom:1px solid transparent}
+.hero-eyebrow::before,.section-tag::before{background:transparent}
+.hero-eyebrow{color:var(--sg-700)}
+
+/* section rhythm: white / sage / forest */
+.problems,.how-it-works,.live-demo,.results,.keywords-section{background:var(--sg-white)}
+.solutions,.pricing{background:var(--sg-50)}
+.use-cases{background:var(--sg-100)}
+.problems,.solutions,.how-it-works,.use-cases,.live-demo,.pricing,.results,.projects{border-bottom:1px solid var(--ds-line)}
+
+/* cards */
+.feature-card,.how-card,.use-card,.price-card,.demo-shell,.demo-picker,.pipeline-preview,.flow-step,.result-metric{
+  background:var(--sg-white);border:1px solid var(--ds-line);border-radius:16px;box-shadow:var(--sg-shadow)}
+.how-card{background:var(--sg-50)}
+.feature-card{border-top:3px solid var(--sg-500)}
+.problem-grid{background:var(--ds-line);border:1px solid var(--ds-line);border-radius:16px;overflow:hidden}
+.problem-item{background:var(--sg-white)}
+.problem-item:hover{background:var(--sg-50);border-color:transparent}
+.demo-panel{background:var(--sg-white);border:1px solid var(--ds-line);border-radius:12px}
+.demo-list li,.pipeline-outcome{background:var(--sg-50);border-left:3px solid var(--sg-500);color:#2c3d33;border-radius:0 8px 8px 0}
+.service-pill{background:var(--sg-50);border:1px solid var(--ds-line);border-radius:10px}
+.feature-outcome{background:var(--sg-100);color:var(--sg-700);border:1px solid rgba(47,93,70,.25);border-radius:999px;padding:5px 12px}
+.pricing-note{background:var(--sg-100);border-left:3px solid var(--sg-500);color:#2c3d33;border-radius:0 8px 8px 0}
+.logo-pill{background:var(--sg-50);border:1px solid var(--ds-line);border-radius:999px;padding:8px 16px}
+.demo-status{background:var(--sg-100);border-color:rgba(47,93,70,.25);color:var(--sg-700);border-radius:999px}
+.business-card,.task-chip{border-radius:12px}
+.business-card:hover,.task-chip:hover{background:var(--sg-50);border-color:rgba(47,93,70,.35)}
+.business-card.active,.task-chip.active{background:var(--sg-100);border-color:var(--sg-700)}
+.flow-index{border:1px solid var(--sg-500);color:var(--sg-700);border-radius:50%}
+.flow-step:not(:last-child)::after{background:var(--sg-500)}
+.price-card:not(.featured) .price-btn{background:transparent;color:var(--sg-700)}
+.price-card:not(.featured) .price-btn:hover{background:var(--sg-100);color:var(--sg-900)}
+.price-card.featured{background:linear-gradient(160deg,#17261E 0%,#2C4A3A 100%);border:1px solid #2F5D46;color:#fff;box-shadow:0 24px 54px rgba(23,38,30,.28)}
+.price-card.featured .price-tier,.price-card.featured .price-amount{color:var(--sg-200)}
+.price-card.featured .plan-fit,.price-card.featured .price-period,.price-card.featured .price-features li{color:rgba(255,255,255,.78)}
+.price-card.featured .price-features li::before{color:var(--sg-300)}
+.price-card.featured .price-btn{background:var(--sg-100);color:var(--sg-900);border-color:var(--sg-100)}
+.price-card.featured .price-btn:hover{background:#fff}
+
+/* deep forest sections */
+#founder-engine{background:radial-gradient(circle at 90% 0%,rgba(134,169,143,.25),transparent 48%),linear-gradient(160deg,#17261E 0%,#223A2E 100%)!important;border-bottom:1px solid #2F5D46!important}
+#founder-engine .section-title{color:#fff}
+#founder-engine .section-copy{color:rgba(255,255,255,.76)}
+#founder-engine .section-tag{display:inline-flex;background:var(--sg-300);color:var(--sg-900);padding:6px 16px;border-radius:999px;font-style:normal;font-size:13px;letter-spacing:.08em}
+#founder-engine .section-tag::before{display:none}
+#founder-engine .feature-card{background:rgba(255,255,255,.06);border:1px solid rgba(183,207,170,.28);border-left-color:var(--sg-300)!important;box-shadow:none}
+#founder-engine .feature-name{color:#fff}
+#founder-engine .feature-benefit{color:rgba(255,255,255,.74)}
+#founder-engine .feature-outcome{background:rgba(183,207,170,.12);color:var(--sg-200);border-color:rgba(183,207,170,.45)}
+.cta-final{background:radial-gradient(circle at 50% 0%,rgba(134,169,143,.3),transparent 56%),linear-gradient(160deg,#17261E 0%,#223A2E 100%);border-bottom:1px solid #2F5D46}
+.cta-final h2{color:#fff}
+.cta-final p{color:rgba(255,255,255,.76)}
+.cta-final .btn-primary{background:var(--sg-100);color:var(--sg-900);border-color:var(--sg-100)}
+.cta-final .btn-primary:hover{background:#fff}
+.cta-final .btn-secondary{color:#fff;border-color:rgba(255,255,255,.55)}
+.cta-final .btn-secondary:hover{background:rgba(255,255,255,.1)}
+footer{background:#101A14}
+.footer-copy,.footer-links a{color:rgba(255,255,255,.62)}
+.footer-links a:hover{color:var(--sg-200)}
+
+/* demo workspace, modals, forms */
+.demo-workspace{background:var(--sg-white)}
+.demo-workspace-head{background:rgba(252,253,250,.9)}
+.demo-workspace-brand span{color:var(--sg-700)}
+.modal-card{background:var(--sg-white);border:1px solid var(--ds-line);border-radius:18px;box-shadow:0 30px 80px rgba(23,38,30,.3)}
+.lead-modal,.policy-modal,.account-modal{background:rgba(16,26,20,.55);backdrop-filter:blur(6px)}
+.auth-tabs{border-radius:999px;overflow:hidden}
+.auth-tab{background:var(--sg-white);color:var(--ds-muted)}
+.lead-form input,.lead-form select,.lead-form textarea,.signin-form input{background:var(--sg-white);border:1px solid rgba(47,93,70,.25);border-radius:10px}
+.lead-form input:focus,.lead-form select:focus,.lead-form textarea:focus,.signin-form input:focus{outline:none;border-color:var(--sg-700);box-shadow:0 0 0 3px rgba(134,169,143,.35)}
+.modal-close{border-radius:50%}
+.policy-modal #policyBody::-webkit-scrollbar-thumb,.account-modal .modal-sub::-webkit-scrollbar-thumb,.lead-modal .modal-sub::-webkit-scrollbar-thumb{background:var(--sg-500)}
+@media (max-width:760px){.feature-card,.how-card,.use-card,.price-card{border-radius:14px}}
+</style>
 </head>
-<body class="intro-lock">
+<body>
   <div class="cinematic-intro" id="cinematicIntro" aria-label="AIAS cinematic intro">
     <div class="animate__animated animate__flip" style="--animate-duration: 1.2s; animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);">
       <div class="aias-stage">
@@ -1743,202 +1972,74 @@
     </nav>
 
     <section class="hero reveal" id="about">
-      <div class="hero-eyebrow">AI SaaS Platform for Business Automation</div>
-      <h1>Deploy AI agents to automate your business workflows in minutes.</h1>
-      <p class="hero-sub">AIAS is an AI SaaS platform that connects your tools, deploys AI agents for business, and runs AI workflow automation from one control center so teams can move faster with less manual work.</p>
-      <p class="hero-use-case">Use case example: A support team auto-classifies incoming tickets, drafts replies, updates CRM records, and escalates priority issues in real time.</p>
+      <div class="hero-eyebrow">AI automation for modern business</div>
+      <h1>Automation that works as carefully as you do.</h1>
+      <p class="hero-sub">AIAS connects your tools and puts AI agents to work on repetitive tasks such as support, sales follow-up and onboarding, with approvals and reporting built in.</p>
       <div class="hero-actions">
-        <button class="btn-primary" type="button" data-action="demo-gate" data-source="Hero See Demo" data-plan="Growth">See Demo</button>
-        <button class="btn-secondary" type="button" data-action="book-call" data-source="Hero Book Call">Book Call</button>
-      </div>
-      <div class="hero-metric-row">
-        <div class="metric"><div class="metric-val">10x</div><div class="metric-label">Faster AI deployment</div></div>
-        <div class="metric"><div class="metric-val">60%</div><div class="metric-label">Lower manual workload</div></div>
-        <div class="metric"><div class="metric-val">99.95%</div><div class="metric-label">Platform uptime target</div></div>
-        <div class="metric"><div class="metric-val">72h</div><div class="metric-label">Average time to first automation</div></div>
+        <button class="btn-primary" type="button" data-action="demo-gate" data-source="Hero See Demo" data-plan="Growth">Request a demo</button>
+        <button class="btn-secondary" type="button" data-action="book-call" data-source="Hero Book Call">Book a call</button>
       </div>
     </section>
 
-    <div class="tagline-band reveal">
-      <p>One platform to deploy AI in business, automate workflows, and scale operations without adding headcount.</p>
-      <div class="band-label">B2B AI SaaS<br>Product First Platform</div>
-    </div>
+    
 
     <section class="problems reveal" id="problems">
-      <div class="section-tag">Problems We Solve</div>
-      <h2 class="section-title">Why teams struggle to automate business workflows with AI</h2>
-      <p class="section-copy">Most teams buy multiple tools, but still do repetitive work manually. AIAS solves the integration, deployment, and analytics gaps that slow down business automation.</p>
-      <div class="problem-grid">
-        <div class="problem-item">
-          <div class="problem-num">01</div>
-          <div class="problem-title">Your business tools are not integrated with AI automation software</div>
-          <div class="problem-body">Data lives in separate apps, so your team cannot run AI workflow automation end-to-end across sales, support, and operations.</div>
-        </div>
-        <div class="problem-item">
-          <div class="problem-num">02</div>
-          <div class="problem-title">AI agents for business are hard to deploy and maintain</div>
-          <div class="problem-body">Generic models do not map to your process logic, approvals, and SLAs, so deployment stalls before teams see outcomes.</div>
-        </div>
-        <div class="problem-item">
-          <div class="problem-num">03</div>
-          <div class="problem-title">You cannot scale enterprise AI solutions safely</div>
-          <div class="problem-body">Without governance, audit trails, and role controls, scaling AI across teams creates risk and inconsistent output quality.</div>
-        </div>
-        <div class="problem-item">
-          <div class="problem-num">04</div>
-          <div class="problem-title">You lack real-time AI analytics on business impact</div>
-          <div class="problem-body">Teams cannot measure automation value quickly, so leaders struggle to reduce operational cost with AI and prioritize the next rollout.</div>
-        </div>
-      </div>
-    </section>
+      <div class="section-tag">The challenge</div>
+      <h2 class="section-title">Most automation stalls before it delivers</h2>
+      <p class="section-copy">The tools are rarely the problem. Connecting, governing and measuring them is.</p>
+      <div class="problem-grid"><div class="problem-item"><div class="problem-title">Tools that don’t talk to each other</div><div class="problem-body">Your data sits in separate apps, so work is still handed off by hand.</div></div><div class="problem-item"><div class="problem-title">Agents that don’t fit your process</div><div class="problem-body">Generic AI ignores your approvals, rules and service levels, and rollouts stall.</div></div><div class="problem-item"><div class="problem-title">No control as you scale</div><div class="problem-body">Without roles, approvals and audit trails, wider adoption adds risk.</div></div><div class="problem-item"><div class="problem-title">An unclear return</div><div class="problem-body">If you can’t see time saved and outcomes, you can’t decide what to automate next.</div></div></div></section>
 
     <section class="solutions reveal" id="features">
-      <div class="section-tag">Product Features</div>
-      <h2 class="section-title">Built as a scalable AI platform, not an agency service</h2>
-      <p class="section-copy">Each feature is designed to solve a clear operations problem, deliver measurable value, and help teams deploy AI in business faster.</p>
-      <div class="feature-grid">
-        <article class="feature-card">
-          <h3 class="feature-name">AI Workflow Automation Engine</h3>
-          <p class="feature-benefit">Automate repetitive business tasks using AI agents for business and rule-based orchestration across your existing tools.</p>
-          <div class="feature-outcome">Outcome: Reduce manual operational work by up to 60%</div>
-        </article>
-        <article class="feature-card">
-          <h3 class="feature-name">AI Platform to Build and Deploy Automation</h3>
-          <p class="feature-benefit">Use templates, prompts, and integration connectors to launch AI tools for automation without custom project cycles.</p>
-          <div class="feature-outcome">Outcome: Launch production automations in days, not months</div>
-        </article>
-        <article class="feature-card">
-          <h3 class="feature-name">Enterprise AI Solutions with Governance</h3>
-          <p class="feature-benefit">Run secure multi-team workflows with approvals, role access, audit logs, and policy controls for regulated operations.</p>
-          <div class="feature-outcome">Outcome: Scale AI across departments with consistent quality</div>
-        </article>
-        <article class="feature-card">
-          <h3 class="feature-name">Real-Time AI Analytics and ROI Tracking</h3>
-          <p class="feature-benefit">Track execution volume, time saved, and business outcomes in one dashboard with real-time AI analytics.</p>
-          <div class="feature-outcome">Outcome: Prove ROI quickly and optimize automation strategy</div>
-        </article>
-      </div>
-    </section>
+      <div class="section-tag">The platform</div>
+      <h2 class="section-title">One platform to build, run and measure automation</h2>
+      <p class="section-copy">Everything your team needs to put AI to work, without a custom project for every workflow.</p>
+      <div class="feature-grid"><article class="feature-card"><h3 class="feature-name">Workflow automation</h3><p class="feature-benefit">Orchestrate AI agents and rules across the tools you already use.</p><div class="feature-outcome">Less manual work</div></article>
+<article class="feature-card"><h3 class="feature-name">Build and deploy</h3><p class="feature-benefit">Start from templates, prompts and connectors, and go live without a long project.</p><div class="feature-outcome">Live in days</div></article>
+<article class="feature-card"><h3 class="feature-name">Governance built in</h3><p class="feature-benefit">Approvals, role access, audit logs and policy controls for every team.</p><div class="feature-outcome">Consistent quality at scale</div></article>
+<article class="feature-card"><h3 class="feature-name">Analytics and ROI</h3><p class="feature-benefit">Follow volume, time saved and outcomes from one dashboard.</p><div class="feature-outcome">A clear return</div></article>
+</div></section>
 
     <section class="solutions reveal" id="founder-engine" style="background: linear-gradient(180deg, var(--ds-soft) 0%, rgba(212,175,55,0.05) 50%, var(--ds-soft) 100%); border-bottom: 0.5px solid var(--ds-line); padding-top: 3.5rem; padding-bottom: 3.5rem;">
-      <div class="section-tag" style="background: var(--ds-gold-deep); color: #fff; border: none; padding: 4px 10px; font-weight: 600;">AIAS 2.0 FOR FOUNDERS</div>
-      <h2 class="section-title">The Massive Leap from Operations to Product Delivery</h2>
-      <p class="section-copy">Startup founders need proprietary technology assets, not vendor lock-in. AIAS 2.0 compiles native frontends, automates compliance, and exports standard, clean code that you can host anywhere or show to VC investors.</p>
-      
-      <div class="feature-grid">
-        <article class="feature-card" style="position: relative; overflow: hidden; border-left: 3px solid var(--ds-gold-deep);">
-          <h3 class="feature-name">1. True Code Exportability (Zero Lock-In)</h3>
-          <p class="feature-benefit">Outgrown the platform? Click "Eject" to download your workflows compiled as a standardized, beautifully clean Python or Node.js backend with Docker container configurations. Completely independent, ready to deploy to AWS or Google Cloud.</p>
-          <div class="feature-outcome" style="background: rgba(212,175,55,0.1); border-color: var(--ds-gold-deep); color: var(--ds-gold-deep);">100% OWNERSHIP &middot; NO LOCK-IN</div>
-        </article>
-
-        <article class="feature-card" style="position: relative; overflow: hidden; border-left: 3px solid var(--ds-gold-deep);">
-          <h3 class="feature-name">2. Native Frontend Compilation Engine</h3>
-          <p class="feature-benefit">We don't just mock apps—our engine automatically compiles production-ready mobile code frameworks in React Native or Flutter. Access smartphone hardware natively, including background GPS tracking, native camera processing, and encrypted local storage.</p>
-          <div class="feature-outcome" style="background: rgba(212,175,55,0.1); border-color: var(--ds-gold-deep); color: var(--ds-gold-deep);">FLUTTER &amp; REACT NATIVE &middot; NATIVE SDK</div>
-        </article>
-
-        <article class="feature-card" style="position: relative; overflow: hidden; border-left: 3px solid var(--ds-gold-deep);">
-          <h3 class="feature-name">3. App Store Compliance &amp; CI/CD Pipelines</h3>
-          <p class="feature-benefit">Skip the manual submission headache. AIAS auto-generates your App Store privacy policies, runs data tracking compliance checks, orchestrates TestFlight &amp; Google Play Console beta builds, and deploys storefront updates automatically.</p>
-          <div class="feature-outcome" style="background: rgba(212,175,55,0.1); border-color: var(--ds-gold-deep); color: var(--ds-gold-deep);">AUTOMATED COMPLIANCE &middot; CI/CD PIPELINE</div>
-        </article>
-
-        <article class="feature-card" style="position: relative; overflow: hidden; border-left: 3px solid var(--ds-gold-deep);">
-          <h3 class="feature-name">4. Secure Custom Code Sandbox</h3>
-          <p class="feature-benefit">Need custom logic for deep-tech sectors? Inject raw Python, Go, or C++ scripts directly into your automation pipelines. Process complex mathematics, real-time spatial databases, telemetry streams, and hardware telemetry without template restrictions.</p>
-          <div class="feature-outcome" style="background: rgba(212,175,55,0.1); border-color: var(--ds-gold-deep); color: var(--ds-gold-deep);">SECURE CODE SANDBOX &middot; RAW TELEMETRY &amp; GIS</div>
-        </article>
-      </div>
-    </section>
+      <div class="section-tag">AIAS 2.0 for founders</div>
+      <h2 class="section-title">Build it here. Own it everywhere.</h2>
+      <p class="section-copy">Founders need technology they own, not a dependency. AIAS 2.0 produces standard, clean code you can host anywhere and show to investors.</p>
+      <div class="feature-grid"><article class="feature-card" style="border-left:3px solid var(--ds-gold-deep);"><h3 class="feature-name">Export your code</h3><p class="feature-benefit">Download your workflows as a clean Python or Node.js backend with Docker configuration, ready for AWS or Google Cloud.</p><div class="feature-outcome">No lock-in</div></article>
+<article class="feature-card" style="border-left:3px solid var(--ds-gold-deep);"><h3 class="feature-name">Native mobile frontends</h3><p class="feature-benefit">Generate React Native or Flutter apps with access to device features such as GPS, camera and encrypted local storage.</p><div class="feature-outcome">Flutter and React Native</div></article>
+<article class="feature-card" style="border-left:3px solid var(--ds-gold-deep);"><h3 class="feature-name">Store-ready releases</h3><p class="feature-benefit">Generate privacy policies, run compliance checks, and manage TestFlight and Google Play beta builds through a CI/CD pipeline.</p><div class="feature-outcome">Automated releases</div></article>
+<article class="feature-card" style="border-left:3px solid var(--ds-gold-deep);"><h3 class="feature-name">Custom code sandbox</h3><p class="feature-benefit">Add your own Python, Go or C++ logic to a pipeline for specialised work such as telemetry and spatial data.</p><div class="feature-outcome">Isolated sandbox</div></article>
+</div></section>
 
     <section class="how-it-works reveal" id="how-it-works">
-      <div class="section-tag">How It Works</div>
-      <h2 class="section-title">Three steps to automate business workflows</h2>
-      <p class="section-copy">AIAS simplifies enterprise deployment so teams can move from setup to outcomes quickly.</p>
-      <div class="how-grid">
-        <article class="how-card">
-          <div class="how-step">Step 1</div>
-          <h3 class="how-title">Connect your data</h3>
-          <p class="how-body">Connect CRM, ERP, support, and internal systems so your AI automation software can run with context and clean inputs.</p>
-        </article>
-        <article class="how-card">
-          <div class="how-step">Step 2</div>
-          <h3 class="how-title">Deploy AI agents</h3>
-          <p class="how-body">Choose workflow templates, set decision rules, and deploy AI agents for business by team, function, or process stage.</p>
-        </article>
-        <article class="how-card">
-          <div class="how-step">Step 3</div>
-          <h3 class="how-title">Automate workflows</h3>
-          <p class="how-body">Run automations continuously, monitor with real-time AI analytics, and improve outputs with built-in feedback loops.</p>
-        </article>
-      </div>
-    </section>
+      <div class="section-tag">How it works</div>
+      <h2 class="section-title">Live in three steps</h2>
+      <p class="section-copy">From connection to results, without the usual project overhead.</p>
+      <div class="how-grid"><article class="how-card"><div class="how-step">Step 1</div><h3 class="how-title">Connect your tools</h3><p class="how-body">Link your CRM, ERP, support and internal systems so agents work with real context.</p></article><article class="how-card"><div class="how-step">Step 2</div><h3 class="how-title">Deploy AI agents</h3><p class="how-body">Choose a template, set decision rules and deploy by team, function or process stage.</p></article><article class="how-card"><div class="how-step">Step 3</div><h3 class="how-title">Run and refine</h3><p class="how-body">Automations run continuously while analytics and feedback loops improve the results.</p></article></div></section>
 
     <section class="use-cases reveal" id="use-cases">
-      <div class="section-tag">Use Cases</div>
-      <h2 class="section-title">AI for startups, enterprises, and agriculture teams</h2>
-      <p class="section-copy">Every use case is structured around a business bottleneck and a measurable automation outcome.</p>
-      <div class="use-grid">
-        <article class="use-card">
-          <h3 class="use-title">AI for startups</h3>
-          <p class="use-body">Automate lead qualification, onboarding tasks, and support triage so lean teams can scale without hiring too early.</p>
-          <div class="use-result">Result: Faster go-to-market with stronger AI productivity tools</div>
-        </article>
-        <article class="use-card">
-          <h3 class="use-title">AI for enterprises</h3>
-          <p class="use-body">Standardize operations across departments with enterprise AI solutions, approvals, and compliance visibility.</p>
-          <div class="use-result">Result: Consistent execution and lower cross-team process friction</div>
-        </article>
-        <article class="use-card">
-          <h3 class="use-title">AI for agriculture</h3>
-          <p class="use-body">Automate crop planning workflows, alert routing, and field reporting with AI agents connected to operational data streams.</p>
-          <div class="use-result">Result: Better planning speed and real-time decision support</div>
-        </article>
-      </div>
-    </section>
+      <div class="section-tag">Who it’s for</div>
+      <h2 class="section-title">Built for startups, enterprises and agriculture</h2>
+      <p class="section-copy">Each use case starts with a real bottleneck and ends with work that no longer needs doing by hand.</p>
+      <div class="use-grid"><article class="use-card"><h3 class="use-title">Startups</h3><p class="use-body">Automate lead qualification, onboarding and support triage so a lean team can scale without hiring too early.</p></article><article class="use-card"><h3 class="use-title">Enterprises</h3><p class="use-body">Standardise operations across departments with approvals, governance and compliance visibility.</p></article><article class="use-card"><h3 class="use-title">Agriculture</h3><p class="use-body">Automate crop planning, alert routing and field reporting from connected operational data.</p></article></div></section>
 
     <section class="live-demo reveal" id="live-demo">
-      <div class="section-tag">Live Demo / Product Preview</div>
-      <h2 class="section-title">See AIAS run automation in real time</h2>
-      <p class="section-copy">Preview how the platform executes AI workflow automation from event trigger to business action and reporting.</p>
+      <div class="section-tag">Product preview</div>
+      <h2 class="section-title">See a workflow in motion</h2>
+      <p class="section-copy">Follow a request from trigger to action to report.</p>
       <div class="demo-shell">
-        <div class="demo-toolbar">
-          <div class="demo-title">AIAS Workflow Preview</div>
-          <div class="demo-status">Status: Live simulation mode</div>
-        </div>
+        <div class="demo-toolbar"><div class="demo-title">AIAS workflow preview</div><div class="demo-status">Interactive preview</div></div>
         <div class="demo-grid">
-          <div class="demo-panel">
-            <h4>Automation Pipeline</h4>
-            <p>Incoming request -> AI intent detection -> policy check -> business action -> analytics update.</p>
-            <ul class="demo-list">
-              <li>Lead form captured and enriched with company data</li>
-              <li>AI agent qualifies lead and assigns priority</li>
-              <li>Task synced to CRM and sales queue automatically</li>
-            </ul>
-          </div>
-          <div class="demo-panel">
-            <h4>Business Impact Snapshot</h4>
-            <p>Estimated impact with active AI tools for automation:</p>
-            <ul class="demo-list">
-              <li>42% faster response cycle</li>
-              <li>31% lower manual ticket handling</li>
-              <li>18% higher qualified pipeline throughput</li>
-            </ul>
-          </div>
+          <div class="demo-panel"><h4>Automation pipeline</h4><p>Request received → intent detected → policy checked → action taken → report updated.</p>
+            <ul class="demo-list"><li>Lead form captured and enriched with company data</li><li>AI agent qualifies the lead and assigns priority</li><li>Task synced to the CRM and sales queue</li></ul></div>
+          <div class="demo-panel"><h4>What teams track</h4><p>The dashboard keeps the impact of each automation visible.</p>
+            <ul class="demo-list"><li>Response time</li><li>Manual handling</li><li>Qualified pipeline throughput</li></ul></div>
         </div>
         <div class="demo-actions">
-          <button class="btn-primary" type="button" data-action="demo-gate" data-source="Live Demo Launch">See Demo</button>
-          <button class="btn-secondary" type="button" data-action="book-call" data-source="Live Demo Book Call">Book Call</button>
+          <button class="btn-primary" type="button" data-action="demo-gate" data-source="Live Demo Launch">Request a demo</button>
+          <button class="btn-secondary" type="button" data-action="book-call" data-source="Live Demo Book Call">Book a call</button>
         </div>
-      </div>
-    </section>
+      </div></section>
 
-    <section class="keywords-section reveal" id="seo-keywords">
-      <div class="section-tag">SEO Content Block</div>
-      <h2 class="section-title">Why teams choose AIAS for B2B automation</h2>
-      <p class="seo-keyword-text">AIAS is an AI SaaS platform and AI automation software built for companies that need reliable execution, not experiments. Our B2B AI SaaS product helps teams deploy AI in business with AI agents for business, AI workflow automation, and enterprise AI solutions from one scalable AI platform. Instead of disconnected scripts, you get structured AI tools for automation that reduce manual effort and improve consistency. Teams use AIAS to reduce operational cost with AI, automate business workflows, and track performance with real-time AI analytics. The platform is designed as AI for startups and enterprises, with practical AI productivity tools and governance controls that support day-to-day execution at scale.</p>
-    </section>
+    
 
     <section class="pricing reveal" id="pricing">
       <div class="section-tag">Pricing</div>
@@ -1989,151 +2090,45 @@
     </section>
 
     <section class="results reveal" id="results">
-      <div class="section-tag">Real Results and Trust</div>
-      <h2 class="section-title">Proof that automation delivers measurable outcomes</h2>
-      <p class="section-copy">These are representative platform metrics and customer outcomes from active automation environments.</p>
-      <div class="results-metrics">
-        <div class="result-metric"><strong>2.4M+</strong><span>Automation tasks executed</span></div>
-        <div class="result-metric"><strong>350+</strong><span>Active teams on platform</span></div>
-        <div class="result-metric"><strong>99.95%</strong><span>Observed infrastructure uptime</span></div>
-      </div>
-      <div class="sales-impact">
-        <article class="sales-card">
-          <div class="sales-head">
-            <h4>Monthly Sales Pipeline</h4>
-            <span class="sales-growth">+138%</span>
-          </div>
-          <p>Before AIAS: slow lead movement. After AIAS: faster qualification and follow-up velocity.</p>
-          <div class="sales-chart">
-            <div class="chart-group">
-              <div class="chart-label">Before AIAS</div>
-              <div class="chart-bars">
-                <span class="bar" style="--h:22%;"></span>
-                <span class="bar" style="--h:30%;"></span>
-                <span class="bar" style="--h:35%;"></span>
-                <span class="bar" style="--h:40%;"></span>
-                <span class="bar" style="--h:44%;"></span>
-                <span class="bar" style="--h:48%;"></span>
-              </div>
-            </div>
-            <div class="chart-group">
-              <div class="chart-label">After AIAS</div>
-              <div class="chart-bars">
-                <span class="bar after" style="--h:45%;"></span>
-                <span class="bar after" style="--h:58%;"></span>
-                <span class="bar after" style="--h:67%;"></span>
-                <span class="bar after" style="--h:74%;"></span>
-                <span class="bar after" style="--h:82%;"></span>
-                <span class="bar after" style="--h:90%;"></span>
-              </div>
-            </div>
-          </div>
-          <div class="sales-foot">Conversion window reduced from 21 days to 9 days.</div>
-        </article>
-        <article class="sales-card">
-          <div class="sales-head">
-            <h4>Revenue Per Rep</h4>
-            <span class="sales-growth">+92%</span>
-          </div>
-          <p>Before AIAS: manual updates and drop-offs. After AIAS: AI-driven follow-ups increase rep efficiency.</p>
-          <div class="sales-chart">
-            <div class="chart-group">
-              <div class="chart-label">Before AIAS</div>
-              <div class="chart-bars">
-                <span class="bar" style="--h:28%;"></span>
-                <span class="bar" style="--h:31%;"></span>
-                <span class="bar" style="--h:34%;"></span>
-                <span class="bar" style="--h:38%;"></span>
-                <span class="bar" style="--h:42%;"></span>
-                <span class="bar" style="--h:46%;"></span>
-              </div>
-            </div>
-            <div class="chart-group">
-              <div class="chart-label">After AIAS</div>
-              <div class="chart-bars">
-                <span class="bar after" style="--h:43%;"></span>
-                <span class="bar after" style="--h:52%;"></span>
-                <span class="bar after" style="--h:61%;"></span>
-                <span class="bar after" style="--h:68%;"></span>
-                <span class="bar after" style="--h:74%;"></span>
-                <span class="bar after" style="--h:81%;"></span>
-              </div>
-            </div>
-          </div>
-          <div class="sales-foot">Average revenue per rep increased from INR 1.9L to INR 3.6L.</div>
-        </article>
-        <article class="sales-card">
-          <div class="sales-head">
-            <h4>Repeat Purchase Sales</h4>
-            <span class="sales-growth">+76%</span>
-          </div>
-          <p>Before AIAS: weak retention campaigns. After AIAS: automated renewal nudges and upsell intelligence.</p>
-          <div class="sales-chart">
-            <div class="chart-group">
-              <div class="chart-label">Before AIAS</div>
-              <div class="chart-bars">
-                <span class="bar" style="--h:18%;"></span>
-                <span class="bar" style="--h:22%;"></span>
-                <span class="bar" style="--h:27%;"></span>
-                <span class="bar" style="--h:30%;"></span>
-                <span class="bar" style="--h:33%;"></span>
-                <span class="bar" style="--h:36%;"></span>
-              </div>
-            </div>
-            <div class="chart-group">
-              <div class="chart-label">After AIAS</div>
-              <div class="chart-bars">
-                <span class="bar after" style="--h:35%;"></span>
-                <span class="bar after" style="--h:42%;"></span>
-                <span class="bar after" style="--h:51%;"></span>
-                <span class="bar after" style="--h:58%;"></span>
-                <span class="bar after" style="--h:63%;"></span>
-                <span class="bar after" style="--h:69%;"></span>
-              </div>
-            </div>
-          </div>
-          <div class="sales-foot">Repeat sales contribution moved from 18% to 32% of monthly revenue.</div>
-        </article>
-      </div>
-      <div class="testimonial-grid">
-        <article class="testimonial">
-          <p>"AIAS helped us automate business workflows across support and onboarding in under two weeks."</p>
-          <div class="author">COO, B2B SaaS Startup</div>
-        </article>
-        <article class="testimonial">
-          <p>"We replaced manual routing with AI agents for business and cut average response time by almost half."</p>
-          <div class="author">Head of Operations, Enterprise Team</div>
-        </article>
-        <article class="testimonial">
-          <p>"The real-time AI analytics view made it easy to prove ROI and prioritize the next automation rollout."</p>
-          <div class="author">Director, Digital Programs</div>
-        </article>
-      </div>
-      <div class="tech-logos">
-        <span class="logo-pill">OpenAI</span>
-        <span class="logo-pill">AWS</span>
-        <span class="logo-pill">Google Cloud</span>
-        <span class="logo-pill">PostgreSQL</span>
-        <span class="logo-pill">Docker</span>
-        <span class="logo-pill">Kubernetes</span>
-        <span class="logo-pill">Stripe</span>
-      </div>
-    </section>
+      <div class="section-tag">Foundations</div>
+      <h2 class="section-title">Built on infrastructure you already trust</h2>
+      <p class="section-copy">AIAS runs on widely adopted cloud, data and AI platforms, so it fits the way your team already works.</p>
+      <div class="tech-logos"><span class="logo-pill">OpenAI</span><span class="logo-pill">AWS</span><span class="logo-pill">Google Cloud</span><span class="logo-pill">PostgreSQL</span><span class="logo-pill">Docker</span><span class="logo-pill">Kubernetes</span><span class="logo-pill">Stripe</span></div></section>
 
-    <section class="seo-block reveal" id="what-is-ai-saas">
-      <div class="section-tag">What Is AI SaaS Platform?</div>
-      <h2 class="section-title">What is an AI SaaS platform and why it matters</h2>
-      <p class="seo-copy">An AI SaaS platform is cloud software that lets businesses deploy artificial intelligence features without building everything from scratch. Instead of creating separate models, scripts, and infrastructure for every team, companies use one platform to connect data sources, run AI agents, and automate workflow decisions. AIAS is built for organizations that want fast deployment and reliable operations, from startup teams to large enterprises. It helps teams launch automations, monitor performance, and improve output quality with clear governance and analytics. This product-first approach reduces technical overhead, improves execution speed, and gives leaders a practical way to scale AI adoption across departments while keeping business processes controlled and measurable.</p>
+    
+
+    <section class="projects reveal" id="projects">
+      <div class="section-tag">Our work</div>
+      <h2 class="section-title">Featured Projects</h2>
+      <p class="section-copy">Explore the projects we've built and deployed</p>
+      <div class="projects-grid">
+        <article class="project-card">
+          <div class="project-tag">Estimo</div>
+          <h3 class="project-title">AI-Powered Estimation Platform</h3>
+          <p class="project-description">An intelligent estimation platform for project planning, cost calculation, and resource allocation.</p>
+          <div class="project-links">
+            <a href="https://github.com/Varshithkumar06/Nvidea-hackathon" class="project-link project-link-code" target="_blank" rel="noopener noreferrer">Code</a>
+            <a href="https://nvidia-varshith06.azurewebsites.net/" class="project-link project-link-deploy" target="_blank" rel="noopener noreferrer">Deployed</a>
+          </div>
+        </article>
+        <article class="project-card coming-soon">
+          <div class="project-tag">Aura v3</div>
+          <h3 class="project-title">Aura v3 AI Assistant</h3>
+          <p class="project-description">Next-generation autonomous AI coding and execution assistant with deep memory and multi-model routing.</p>
+          <div class="project-links">
+            <span class="project-link coming-soon-tag">Coming Soon</span>
+          </div>
+        </article>
+      </div>
     </section>
 
     <section class="cta-final reveal" id="contact">
-      <h2>Start Automating Your Business with AI Today</h2>
-      <p>Launch faster with a scalable AI platform built for measurable execution. Try the product preview or book a call with our team to plan your rollout.</p>
+      <h2>Ready to automate the work that slows you down?</h2>
+      <p>See the platform in action or book a call, and we’ll plan your first workflow together.</p>
       <div class="cta-row">
-        <button class="btn-primary" type="button" data-action="demo-gate" data-source="Final CTA See Demo" data-plan="Consultation">See Demo</button>
-        <button class="btn-secondary" type="button" data-action="book-call" data-source="Final CTA Book Call">Book Call</button>
-      </div>
-    </section>
+        <button class="btn-primary" type="button" data-action="demo-gate" data-source="Final CTA See Demo" data-plan="Consultation">Request a demo</button>
+        <button class="btn-secondary" type="button" data-action="book-call" data-source="Final CTA Book Call">Book a call</button>
+      </div></section>
 
     <footer class="reveal">
       <div class="footer-copy">Copyright 2026 AIAS. All rights reserved.</div>
@@ -2302,35 +2297,18 @@
       const policyText = {
         privacy: `
           <div style="font-family: var(--sans); color: var(--ds-black); line-height: 1.6; text-align: left;">
-            <p style="margin-bottom: 1rem; font-weight: 600; color: var(--ds-gold-deep); font-size: 15px; display: flex; align-items: center; gap: 8px;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ds-black)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              <span>AIAS Founder &amp; Enterprise Data Protection Safeguards</span>
-            </p>
-            <p style="margin-bottom: 0.8rem; font-size: 13px;">We understand that your business data and proprietary workflows are your most valuable intellectual assets. AIAS enforces military-grade protocols to guarantee complete security and safety:</p>
-            <ul style="padding-left: 1.2rem; margin-bottom: 1rem; font-size: 12.5px; display: flex; flex-direction: column; gap: 0.5rem;">
-              <li><strong>End-to-End Encryption:</strong> All sensitive data is secured with AES-256 encryption at rest (Azure SQL Server Transparent Data Encryption) and TLS 1.3 in transit.</li>
-              <li><strong>Zero-Trust Sandboxing:</strong> Custom Python, Go, and C++ pipeline code scripts run inside secure, multi-tenant isolated docker sandboxes, ensuring zero cross-leakage of telemetry or spatial streams.</li>
-              <li><strong>Data Sovereignty:</strong> AIAS does not train public foundation models on your customer datasets, specialized spatial databases, or operational workflows.</li>
-              <li><strong>Regulatory Compliance:</strong> Engineered to align strictly with SOC2 Type II, GDPR, and HIPAA data compliance boundaries.</li>
-              <li><strong>Zero Permanent Logs:</strong> Temporary execution telemetry is automatically purged after 2 hours.</li>
-            </ul>
-            <p style="font-size: 11.5px; color: var(--ds-muted);">Your trust is our ultimate benchmark. If you decide to eject and export your codebase, your database connections are instantly wiped from our active caches.</p>
+            <p style="margin-bottom: 1rem; font-weight: 600; color: var(--ds-gold-deep); font-size: 15px;">How we protect your data</p>
+            <p style="margin-bottom: 0.8rem; font-size: 13px;">Your business data and workflows belong to you. This is how AIAS handles them:</p>
+            <ul style="padding-left: 1.2rem; margin-bottom: 1rem; font-size: 12.5px; display: flex; flex-direction: column; gap: 0.5rem;"><li><strong>Encryption:</strong> Data is encrypted at rest with AES-256 and in transit with TLS 1.3.</li><li><strong>Isolated execution:</strong> Custom code runs in isolated sandboxes, separate from other customers.</li><li><strong>Your data stays yours:</strong> We do not train public foundation models on your customer datasets or workflows.</li><li><strong>Export and removal:</strong> If you export your codebase, your database connections are removed from our active caches.</li></ul>
+            <p style="font-size: 11.5px; color: var(--ds-muted);">Questions about privacy? Use the Contact link and we’ll reply within 24 hours.</p>
           </div>
         `,
         terms: `
           <div style="font-family: var(--sans); color: var(--ds-black); line-height: 1.6; text-align: left;">
-            <p style="margin-bottom: 1rem; font-weight: 600; color: var(--ds-gold-deep); font-size: 15px; display: flex; align-items: center; gap: 8px;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ds-black)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              <span>Terms of Service &amp; Intellectual Property Sovereignty</span>
-            </p>
-            <p style="margin-bottom: 0.8rem; font-size: 13px;">AIAS 2.0 is built from the ground up to empower startup founders. Our Terms of Service explicitly protect your ownership rights:</p>
-            <ul style="padding-left: 1.2rem; margin-bottom: 1rem; font-size: 12.5px; display: flex; flex-direction: column; gap: 0.5rem;">
-              <li><strong>100% IP Ownership:</strong> Unlike other low-code platforms, you retain complete, unencumbered ownership of all generated workflows, compiled Flutter/React Native frontends, and exported standalone code.</li>
-              <li><strong>Unconditional Export (Eject):</strong> You have the absolute legal and technical right to click 'Eject/Export' at any time. AIAS will compile your platform assets into raw, standard developer Docker containers that you can host independently on AWS, GCP, or bare metal.</li>
-              <li><strong>Sandbox Terms of Use:</strong> Users are prohibited from executing malicious, destructive, or reverse-engineering scripts inside the custom sandboxes.</li>
-              <li><strong>Platform SLA Guarantee:</strong> We maintain a target uptime of 99.95%. Custom integrations and database channels are fully monitored and isolated to protect performance benchmarks.</li>
-            </ul>
-            <p style="font-size: 11.5px; color: var(--ds-muted);">AIAS is your production build partner—not a vendor lock-in engine. Run on our cloud, or take the keys and run independently.</p>
+            <p style="margin-bottom: 1rem; font-weight: 600; color: var(--ds-gold-deep); font-size: 15px;">Terms of service</p>
+            <p style="margin-bottom: 0.8rem; font-size: 13px;">AIAS 2.0 is built so founders keep ownership of what they create:</p>
+            <ul style="padding-left: 1.2rem; margin-bottom: 1rem; font-size: 12.5px; display: flex; flex-direction: column; gap: 0.5rem;"><li><strong>You own your work:</strong> You keep full ownership of generated workflows, compiled Flutter or React Native frontends, and exported code.</li><li><strong>Export at any time:</strong> You may export your platform assets as standard Docker containers and host them independently on AWS, GCP or your own servers.</li><li><strong>Responsible use:</strong> Malicious, destructive or reverse-engineering scripts are not permitted in the custom sandboxes.</li><li><strong>Availability target:</strong> We aim for 99.95% uptime. Integrations and database channels are monitored and isolated.</li></ul>
+            <p style="font-size: 11.5px; color: var(--ds-muted);">Run on our cloud, or take the code and run independently.</p>
           </div>
         `,
         contact: `
@@ -2850,9 +2828,18 @@
       function closeIntro() {
         intro.classList.add("intro-hidden");
         siteRoot.classList.add("ready");
+        // Force reflow to trigger transition
+        void siteRoot.offsetWidth;
         document.documentElement.classList.remove("intro-lock");
         document.body.classList.remove("intro-lock");
       }
+
+      // Ensure intro closes after 2 seconds max if setTimeout fails
+      setTimeout(() => {
+        if (!intro.classList.contains('intro-hidden')) {
+          closeIntro();
+        }
+      }, 2500);
 
       async function resolveIpHint() {
         if (localStorage.getItem(ipHintKey)) return;

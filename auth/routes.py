@@ -120,9 +120,6 @@ def signin():
 
         RateLimiter.log_successful_login(email)
 
-        # Send welcome email
-        EmailService.send_welcome_email(email, user["display_name"])
-
         return jsonify({
             "success": True,
             "message": "Sign-in successful! Welcome back.",
@@ -175,9 +172,6 @@ def verify_otp():
                 session.permanent = True
 
                 RateLimiter.log_successful_login(email)
-
-                # Send welcome email
-                EmailService.send_welcome_email(email, user["display_name"])
 
                 return jsonify({
                     "success": True,
@@ -371,9 +365,6 @@ def reset_password():
             session["session_token"] = session_token
             session.permanent = True
 
-            # Send welcome email
-            EmailService.send_welcome_email(email, user["display_name"])
-
             return jsonify({
                 "success": True,
                 "message": "Password reset successfully! Welcome back.",
@@ -459,8 +450,13 @@ def google_login():
         flash("Google Sign-In is not configured yet.", "warning")
         return redirect(url_for("auth.signin"))
 
+    # If accessed via 127.0.0.1, redirect to localhost so session cookies & Google redirect URI match
+    if "127.0.0.1" in request.host:
+        target_url = request.url.replace("127.0.0.1", "localhost", 1)
+        return redirect(target_url)
+
     google = get_google_client()
-    redirect_uri = Config.GOOGLE_REDIRECT_URI or (request.host_url.rstrip("/") + "/auth/google/callback")
+    redirect_uri = Config.GOOGLE_REDIRECT_URI or url_for("auth.google_callback", _external=True)
     if Config.FLASK_ENV == "production" and redirect_uri.startswith("http://"):
         redirect_uri = redirect_uri.replace("http://", "https://", 1)
     return google.authorize_redirect(redirect_uri)
@@ -471,7 +467,7 @@ def google_callback():
     """Handle Google OAuth callback."""
     try:
         google = get_google_client()
-        redirect_uri = Config.GOOGLE_REDIRECT_URI or (request.host_url.rstrip("/") + "/auth/google/callback")
+        redirect_uri = Config.GOOGLE_REDIRECT_URI or url_for("auth.google_callback", _external=True)
         if Config.FLASK_ENV == "production" and redirect_uri.startswith("http://"):
             redirect_uri = redirect_uri.replace("http://", "https://", 1)
             
@@ -527,18 +523,21 @@ def google_callback():
 
         # Check if user exists
         user = UserModel.get_by_email(email)
+        is_new_user = False
 
         if not user:
             # Create new Google user (auto-verified)
             user_id = UserModel.create_user(email, None, name, is_google_user=True)
+            is_new_user = True
         else:
             user_id = user["id"]
             # If existing user, mark as also having Google
-            if not user["is_google_user"]:
+            if not user.get("is_google_user"):
                 from database.db import db
-                db.execute(
-                    "UPDATE users SET is_google_user = 1, updated_at = GETUTCDATE() WHERE id = ?",
-                    (user_id,),
+                from datetime import datetime, timezone
+                db.users.update_one(
+                    {"email": email},
+                    {"$set": {"is_google_user": True, "updated_at": datetime.now(timezone.utc)}}
                 )
 
         # Create session
@@ -551,8 +550,9 @@ def google_callback():
         session["session_token"] = session_token
         session.permanent = True
 
-        # Send welcome email
-        EmailService.send_welcome_email(email, name)
+        # Send welcome email only to newly signed-up users
+        if is_new_user:
+            EmailService.send_welcome_email(email, name)
 
         flash("Signed in with Google successfully!", "success")
         return redirect(url_for("index"))
