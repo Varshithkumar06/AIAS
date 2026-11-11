@@ -1,19 +1,33 @@
-name: build-push
+name: ci-cd
 on:
   push:
     branches: [main]
   workflow_dispatch:
+
 jobs:
-  docker:
+  build-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: 9980vk5/aias-web:latest
+          tags: |
+            9980vk5/aias-web:latest
+            9980vk5/aias-web:${{ github.sha }}
+
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy
+        run: |
+          az containerapp update -n aias-web -g aias-sea-rg \
+            --image docker.io/9980vk5/aias-web:${{ github.sha }}
