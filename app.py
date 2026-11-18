@@ -65,7 +65,7 @@ def create_app():
     """Application factory."""
     app = Flask(__name__)
 
-    # Support reverse proxies (Azure Container Apps, Nginx, etc.)
+    # Support reverse proxies (Nginx, ALB, Cloudflare, etc.)
     # Reads X-Forwarded-For, X-Forwarded-Proto, X-Forwarded-Host, X-Forwarded-Prefix
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
@@ -110,13 +110,13 @@ def create_app():
         db_health = db_manager.health_check()
         if db_health["status"] == "healthy":
             log.info(
-                "[Startup] ✓ Database HEALTHY — %s | Latency: %.0fms",
+                "[Startup] [OK] Database HEALTHY — %s | Latency: %.0fms",
                 db_health["connection_type"], db_health["latency_ms"]
             )
         else:
-            log.warning("[Startup] ✗ Database UNHEALTHY — %s", db_health.get("error", "unknown"))
+            log.warning("[Startup] [ERROR] Database UNHEALTHY — %s", db_health.get("error", "unknown"))
     except Exception as exc:
-        log.warning("[Startup] ✗ Database check failed: %s", str(exc)[:200])
+        log.warning("[Startup] [ERROR] Database check failed: %s", str(exc)[:200])
 
     # Auto-start Redis if configured for localhost and not running
     if "localhost" in Config.REDIS_URL or "127.0.0.1" in Config.REDIS_URL:
@@ -128,18 +128,18 @@ def create_app():
         redis_health = RedisService.health_check()
         if redis_health["status"] == "healthy":
             log.info(
-                "[Startup] ✓ Redis HEALTHY — %s | Latency: %.0fms | v%s",
+                "[Startup] [OK] Redis HEALTHY — %s | Latency: %.0fms | v%s",
                 redis_health["connection_type"],
                 redis_health["latency_ms"],
                 redis_health.get("redis_version", "?"),
             )
         else:
             log.warning(
-                "[Startup] ✗ Redis %s — %s (app will function without Redis)",
+                "[Startup] [WARN] Redis %s — %s (app will function without Redis)",
                 redis_health["status"].upper(), redis_health.get("error", "")
             )
     except Exception as exc:
-        log.warning("[Startup] ✗ Redis check failed: %s (app will function without Redis)", str(exc)[:200])
+        log.warning("[Startup] [WARN] Redis check failed: %s (app will function without Redis)", str(exc)[:200])
 
     # ── Register Blueprints ──
     app.register_blueprint(auth_bp)
@@ -714,7 +714,7 @@ if __name__ == "__main__":
     print(f"  -> Local:      http://localhost:{port}/")
     print(f"  -> Sign In:    http://localhost:{port}/signin")
     print(f"  -> Register:   http://localhost:{port}/register")
-    print(f"  -> Azure Live: {Config.BASE_URL}/")
+    print(f"  -> Base URL:   {Config.BASE_URL}/")
     print("=" * 56 + "\n")
     app.run(
         host="0.0.0.0",

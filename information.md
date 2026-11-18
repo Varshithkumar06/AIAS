@@ -4,8 +4,6 @@ This document is the operational and technical overview for the AIAS Flask proje
 
 ## 1. Project Summary
 
-> 🌐 **Live Deployment (Azure Container Apps):** [https://aias-web-standard.bluedune-52554353.southeastasia.azurecontainerapps.io/](https://aias-web-standard.bluedune-52554353.southeastasia.azurecontainerapps.io/)
-
 AIAS is a Flask-based business website and lead management platform. It includes:
 
 - Public AIAS homepage

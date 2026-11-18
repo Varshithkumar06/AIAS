@@ -66,11 +66,8 @@ class Config:
     SESSION_LIFETIME_HOURS = 24
     PERMANENT_SESSION_LIFETIME = 86400  # 24 hours in seconds
 
-    # Application Base URL (Azure Container Apps Live URL)
-    BASE_URL = os.getenv(
-        "BASE_URL",
-        "https://aias-web-standard.bluedune-52554353.southeastasia.azurecontainerapps.io"
-    ).rstrip("/")
+    # Application Base URL
+    BASE_URL = os.getenv("BASE_URL", "http://localhost:5000").rstrip("/")
 
     # Google OAuth
     GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "")
@@ -86,8 +83,10 @@ class Config:
     ZOOM_CLIENT_ID = os.getenv("ZOOM_CLIENT_ID", "")
     ZOOM_CLIENT_SECRET = os.getenv("ZOOM_CLIENT_SECRET", "")
 
-
     # Security Headers
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"
-    SESSION_COOKIE_SECURE = flask_env != "development"
+    SESSION_COOKIE_SECURE = os.getenv(
+        "SESSION_COOKIE_SECURE",
+        "true" if flask_env == "production" else "false"
+    ).lower() in ("true", "1")

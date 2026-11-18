@@ -441,13 +441,8 @@ def register():
 
 
 def _get_google_redirect_uri():
-    """Determine the Google OAuth redirect URI with proper HTTPS scheme and Azure support."""
-    host = request.host or ""
-    is_azure = "azurecontainerapps.io" in host
+    """Determine the Google OAuth redirect URI with proper HTTPS scheme."""
     is_https = request.is_secure or request.headers.get("X-Forwarded-Proto") == "https"
-
-    if is_azure:
-        return f"https://{host}/auth/google/callback"
 
     redirect_uri = Config.GOOGLE_REDIRECT_URI
     if not redirect_uri:

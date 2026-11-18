@@ -346,7 +346,7 @@ class EmailService:
                 zoom_instructions = f"""
           <div class="alert-box" style="background-color: #fdf8ef; border-left: 4px solid #c4a137; padding: 20px 24px; margin: 28px 0; border-radius: 0 8px 8px 0;">
             <p style="font-size: 15px; color: #222222; margin: 0; font-weight: 600; line-height: 1.5;">
-              🎥 Your Zoom Link is Ready
+              Your Zoom Link is Ready
             </p>
             <p style="font-size: 14px; color: #555555; margin: 10px 0 0 0; line-height: 1.5;">
               Click the link below to join the video conference{time_str}:<br>
@@ -359,7 +359,7 @@ class EmailService:
                 zoom_instructions = f"""
           <div class="alert-box" style="background-color: #fdf8ef; border-left: 4px solid #c4a137; padding: 20px 24px; margin: 28px 0; border-radius: 0 8px 8px 0;">
             <p style="font-size: 15px; color: #222222; margin: 0; font-weight: 600; line-height: 1.5;">
-              🎥 Video Meeting Link Pending
+              Video Meeting Link Pending
             </p>
             <p style="font-size: 14px; color: #555555; margin: 10px 0 0 0; line-height: 1.5;">
               Our team is scheduling your discovery video call{time_str}. We will send you the calendar invite with your unique Zoom meeting link via email shortly.
@@ -371,7 +371,7 @@ class EmailService:
             zoom_instructions = f"""
           <div class="alert-box" style="background-color: #fdf8ef; border-left: 4px solid #c4a137; padding: 20px 24px; margin: 28px 0; border-radius: 0 8px 8px 0;">
             <p style="font-size: 15px; color: #222222; margin: 0; font-weight: 600; line-height: 1.5;">
-              📞 Voice Discovery Call
+              Voice Discovery Call
             </p>
             <p style="font-size: 14px; color: #555555; margin: 10px 0 0 0; line-height: 1.5;">
               Our tech leads will call you{time_str} at your provided contact details (WhatsApp: {whatsapp or 'N/A'}, Email: {email}).
@@ -386,7 +386,7 @@ class EmailService:
       <p style="font-size: 12px; color: #888888; margin: 0; line-height: 1.5;">
         <strong>Notice for AIAS Team:</strong> A new lead has booked a call. Please contact this lead (Reply-to: {email} / WhatsApp: {whatsapp or 'N/A'}).
         {f'Scheduled time: {formatted_time}. ' if formatted_time else ''}
-        {'' if call_type != 'Video Conference' else ('Zoom Link: ' + zoom_meeting_link if zoom_meeting_link else '⚠️ Zoom link pending setup. Please schedule the meeting via Admin Panel to create the Zoom link.')}
+        {'' if call_type != 'Video Conference' else ('Zoom Link: ' + zoom_meeting_link if zoom_meeting_link else 'Notice: Zoom link pending setup. Please schedule the meeting via Admin Panel to create the Zoom link.')}
       </p>
     </div>
         """
@@ -523,7 +523,7 @@ class EmailService:
         )
 
         msg = MIMEMultipart("alternative")
-        msg["Subject"] = f"📅 Booking Confirmed: {name} — {service_needed}"
+        msg["Subject"] = f"Booking Confirmed: {name} — {service_needed}"
         msg["From"] = f"{Config.MAIL_SENDER_NAME} <{Config.MAIL_USERNAME}>"
         msg["To"] = ", ".join(recipients)
         msg.attach(MIMEText(plain, "plain"))
